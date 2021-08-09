@@ -1,12 +1,13 @@
-// All of the Node.js APIs are available in the preload process.
-// It has the same sandbox as a Chrome extension.
-window.addEventListener('DOMContentLoaded', () => {
+const handleDOMContentLoaded = () => {
   const replaceText = (selector, text) => {
-    const element = document.getElementById(selector)
-    if (element) element.innerText = text
-  }
+    const element = document.getElementById(selector);
 
-  for (const type of ['chrome', 'node', 'electron']) {
-    replaceText(`${type}-version`, process.versions[type])
+    if (element) element.innerText = text;
+  };
+
+  for (const dep of ['chrome', 'node', 'electron']) {
+    replaceText(`${dep}-version`, process.versions[dep]);
   }
-})
+};
+
+window.addEventListener('DOMContentLoaded', handleDOMContentLoaded);

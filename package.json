@@ -1,22 +1,15 @@
 {
-  "name": "electron-quick-start",
+  "name": "redis-gui",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "Redis GUI client, clone of Redily",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
-  "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
-  ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "repository": "https://github.com/donovanvanheerden/redis-gui",
+  "author": "Donovan van Heerden <dp.vanheerden@gmail.com>",
+  "license": "MIT",
   "devDependencies": {
-    "electron": "^8.2.5"
+    "electron": "^13.1.8"
   }
 }
