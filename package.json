@@ -2,14 +2,18 @@
   "name": "redis-gui",
   "version": "1.0.0",
   "description": "Redis GUI client, clone of Redily",
-  "main": "main.js",
+  "main": "main.ts",
   "scripts": {
-    "start": "electron ."
+    "compile": "tsc && copyfiles -f src/index.html build",
+    "start": "complile && electron"
   },
   "repository": "https://github.com/donovanvanheerden/redis-gui",
   "author": "Donovan van Heerden <dp.vanheerden@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^13.1.8"
-  }
+    "copyfiles": "^2.4.1",
+    "electron": "^13.1.8",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {}
 }
