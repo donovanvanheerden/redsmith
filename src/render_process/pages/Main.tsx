@@ -1,13 +1,8 @@
-import { Typography } from '@material-ui/core';
 import React from 'react';
-import Layout from '../components/layout';
+import Layout from '../components/layout/layout';
 
 const Main = (): JSX.Element => {
-  return (
-    <Layout>
-      <Typography>This is the main page</Typography>
-    </Layout>
-  );
+  return <Layout />;
 };
 
 export default Main;

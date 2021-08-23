@@ -15,30 +15,28 @@ import AddIcon from '@material-ui/icons/Add';
 
 import useStyles from './sideNav.styles';
 import { Tooltip } from '@material-ui/core';
-import WebIpc, { IWebIpc } from '../../infra/WebIpc';
+import { IWebIpc } from '../../infra/WebIpc';
 
-const SideNav = (): JSX.Element => {
+interface Props {
+  ipc: IWebIpc;
+}
+
+const SideNav = ({ ipc }: Props): JSX.Element => {
   const classes = useStyles();
 
-  let webIpc: IWebIpc;
-
-  React.useEffect(() => {
-    webIpc = new WebIpc();
-  }, []);
-
-  const handleCreateConnection = async () => {
+  const handleCreateConnection = React.useCallback(async () => {
     console.log({
       name: 'localhost',
       address: '127.0.0.1',
       port: '5379',
     });
 
-    const syncValue = webIpc.send('localhost');
-    const asyncValue = await webIpc.sendAsync('localhost');
+    const syncValue = ipc.send('localhost');
+    const asyncValue = await ipc.sendAsync('localhost');
 
     console.log('syncValue: ', syncValue);
     console.log('asyncValue: ', asyncValue);
-  };
+  }, [ipc]);
 
   return (
     <Drawer

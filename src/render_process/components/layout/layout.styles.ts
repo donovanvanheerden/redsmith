@@ -1,7 +1,5 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
 
-const drawerWidth = 240;
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default makeStyles((theme: Theme) =>
   createStyles({
@@ -9,9 +7,7 @@ export default makeStyles((theme: Theme) =>
       display: 'flex',
     },
     content: {
-      //   flexGrow: 1,
-      //   padding: theme.spacing(3),
-      width: `calc(100% - ${drawerWidth}px)`,
+      //width: `calc(100% - ${drawerWidth}px)`,
     },
   })
 );
