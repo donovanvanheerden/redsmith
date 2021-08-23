@@ -47,8 +47,6 @@ export default class WebIpc implements IWebIpc {
       window.ipc.receive('keys-reply', (data: string[]) => {
         clearTimeout(timeout);
 
-        console.log('keys: ', data);
-
         resolve(data);
       });
 

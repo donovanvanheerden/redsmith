@@ -7,16 +7,6 @@ const redis = new Redis({
   password: 'agvlive.redis',
 });
 
-ipcMain.on('async-message', (event, arg) => {
-  console.log('async-message: ', arg); // prints "ping"
-  event.reply('async-reply', 'pong');
-});
-
-ipcMain.on('sync-message', (event, arg) => {
-  console.log('sync-message: ', arg); // prints "ping"
-  event.returnValue = 'pong';
-});
-
 ipcMain.on('get', async (event, key: string) => {
   try {
     const value = await redis.get(key);
