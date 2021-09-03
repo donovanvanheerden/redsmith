@@ -2,7 +2,7 @@ import { ipcRenderer, contextBridge } from 'electron';
 
 interface IpcWeb {
   send: (channel: string, ...args: unknown[]) => unknown;
-  sendAsync: (channel: string, ...args: unknown[]) => void;
+  sendAsync: <T>(channel: string, ...args: unknown[]) => Promise<T>;
   receive: (channel: string, handler: (...args: unknown[]) => void) => void;
 }
 
@@ -10,9 +10,25 @@ contextBridge.exposeInMainWorld('ipc', {
   send: (channel, ...args) => {
     return ipcRenderer.sendSync(channel, ...args);
   },
-  sendAsync: (channel, ...args) => {
-    // console.log('sending to channel: ', channel);
-    ipcRenderer.send(channel, ...args);
+  sendAsync: async (channel, ...args) => {
+    return await new Promise((resolve, reject) => {
+      ipcRenderer.send(channel, ...args);
+
+      const replyChannel = channel.replace('message', 'reply');
+      const errChannel = channel.replace('message', 'error');
+
+      ipcRenderer.on(replyChannel, (_, response) => {
+        resolve(response);
+
+        ipcRenderer.removeAllListeners(replyChannel);
+      });
+
+      ipcRenderer.on(errChannel, (_, response) => {
+        reject(response);
+
+        ipcRenderer.removeAllListeners(replyChannel);
+      });
+    });
   },
   receive: (channel, handler) => {
     ipcRenderer.on(channel, (_, ...args) => {

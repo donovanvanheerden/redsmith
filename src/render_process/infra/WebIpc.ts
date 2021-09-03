@@ -37,39 +37,15 @@ export default class WebIpc implements IWebIpc {
   }
 
   async keys(): Promise<string[]> {
-    const method = 'keys';
+    const method = 'keys-message';
 
-    return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        reject('took too long');
-      }, 5000);
-
-      window.ipc.receive('keys-reply', (data: string[]) => {
-        clearTimeout(timeout);
-
-        resolve(data);
-      });
-
-      window.ipc.sendAsync(method);
-    });
+    return await window.ipc.sendAsync<string[]>(method);
   }
 
   async sendAsync(value: string): Promise<unknown> {
     const method = 'async-message';
 
-    return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        reject('took too long');
-      }, 5000);
-
-      window.ipc.receive('async-reply', (data) => {
-        clearTimeout(timeout);
-
-        resolve(data);
-      });
-
-      window.ipc.sendAsync(method, value);
-    });
+    return await window.ipc.send(method, value);
   }
 
   send(value: string): unknown {
