@@ -7,7 +7,7 @@ const redis = new Redis({
   password: 'agvlive.redis',
 });
 
-ipcMain.on('get', async (event, key: string) => {
+ipcMain.on('get-message', async (event, key: string) => {
   try {
     const value = await redis.get(key);
     event.reply('get-reply', value);
@@ -16,11 +16,12 @@ ipcMain.on('get', async (event, key: string) => {
   }
 });
 
-ipcMain.on('keys', async (event) => {
+ipcMain.on('keys-message', async (event) => {
   try {
     redis.select(1);
 
     const keys = await redis.keys('*');
+
     event.reply('keys-reply', keys);
   } catch (error) {
     console.log(error);
