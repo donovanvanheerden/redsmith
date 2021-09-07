@@ -1,3 +1,5 @@
+import { injectable } from 'inversify';
+
 export interface IWebIpc {
   get: (key: string) => Promise<string>;
   keys: () => Promise<string[]>;
@@ -11,6 +13,7 @@ interface IpcWeb {
   receive: (channel: string, handler: (...args: unknown[]) => void) => void;
 }
 
+@injectable()
 export default class WebIpc implements IWebIpc {
   ipc: IpcWeb;
 

@@ -15,14 +15,12 @@ import AddIcon from '@material-ui/icons/Add';
 
 import useStyles from './sideNav.styles';
 import { Tooltip } from '@material-ui/core';
-import { IWebIpc } from '../../infra/WebIpc';
+import { useIpc } from '../../hooks/useFromDi';
 
-interface Props {
-  ipc: IWebIpc;
-}
-
-const SideNav = ({ ipc }: Props): JSX.Element => {
+const SideNav = (): JSX.Element => {
   const classes = useStyles();
+
+  const ipc = useIpc();
 
   const handleCreateConnection = React.useCallback(async () => {
     console.log({
@@ -36,7 +34,7 @@ const SideNav = ({ ipc }: Props): JSX.Element => {
 
     console.log('syncValue: ', syncValue);
     console.log('asyncValue: ', asyncValue);
-  }, [ipc]);
+  }, []);
 
   return (
     <Drawer

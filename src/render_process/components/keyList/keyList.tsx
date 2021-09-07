@@ -2,18 +2,18 @@ import * as React from 'react';
 import useStyles from './keyList.styles';
 import clsx from 'clsx';
 import { Grid } from '@material-ui/core';
-import { IWebIpc } from '../../infra/WebIpc';
 
 import { Header } from '../header';
+import { useIpc } from '../../hooks/useFromDi';
 
 interface Props {
   className?: string;
   children?: React.ReactNode;
-  ipc: IWebIpc;
 }
 
-const KeyList = ({ className, ipc }: Props): JSX.Element => {
+const KeyList = ({ className }: Props): JSX.Element => {
   const classes = useStyles();
+  const ipc = useIpc();
 
   const [keys, setKeys] = React.useState([]);
 
