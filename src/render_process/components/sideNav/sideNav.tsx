@@ -29,11 +29,14 @@ const SideNav = (): JSX.Element => {
       port: '5379',
     });
 
-    const syncValue = ipc.send('localhost');
-    const asyncValue = await ipc.sendAsync('localhost');
+    // const response = await ipc.connect(opts);
+    // console.log(response);
 
-    console.log('syncValue: ', syncValue);
-    console.log('asyncValue: ', asyncValue);
+    // const syncValue = ipc.send('localhost');
+    // const asyncValue = await ipc.sendAsync('localhost');
+
+    // console.log('syncValue: ', syncValue);
+    // console.log('asyncValue: ', asyncValue);
   }, []);
 
   return (

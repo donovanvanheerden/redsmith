@@ -14,19 +14,19 @@ contextBridge.exposeInMainWorld('ipc', {
     return await new Promise((resolve, reject) => {
       ipcRenderer.send(channel, ...args);
 
-      const replyChannel = channel.replace('message', 'reply');
-      const errChannel = channel.replace('message', 'error');
+      // const replyChannel = channel.replace('message', 'reply');
+      // const errChannel = channel.replace('message', 'error');
 
-      ipcRenderer.on(replyChannel, (_, response) => {
+      ipcRenderer.on(channel, (_, response) => {
         resolve(response);
 
-        ipcRenderer.removeAllListeners(replyChannel);
+        ipcRenderer.removeAllListeners(channel);
       });
 
-      ipcRenderer.on(errChannel, (_, response) => {
+      ipcRenderer.on(channel, (_, response) => {
         reject(response);
 
-        ipcRenderer.removeAllListeners(replyChannel);
+        ipcRenderer.removeAllListeners(channel);
       });
     });
   },
