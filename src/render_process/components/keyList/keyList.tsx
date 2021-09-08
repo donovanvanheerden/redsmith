@@ -1,10 +1,11 @@
 import * as React from 'react';
 import useStyles from './keyList.styles';
 import clsx from 'clsx';
-import { Grid } from '@material-ui/core';
+import { Grid, List, ListItem, ListItemText } from '@material-ui/core';
 
 import { Header } from '../header';
-import { useIpc } from '../../hooks/useFromDi';
+import { RootState } from '../../store';
+import { useSelector } from 'react-redux';
 
 interface Props {
   className?: string;
@@ -13,30 +14,47 @@ interface Props {
 
 const KeyList = ({ className }: Props): JSX.Element => {
   const classes = useStyles();
-  const ipc = useIpc();
+  const keys = useSelector<RootState, string[]>((state) => state.redis.keys);
 
-  const [keys, setKeys] = React.useState([]);
+  const [height, setHeight] = React.useState(0);
 
-  const getKeys = React.useCallback(async () => {
-    if (!ipc) return;
+  const calculateHeight = React.useCallback(() => {
+    const height =
+      document.querySelector('#key-container').clientHeight -
+      (document.querySelector('#key-list') as HTMLElement).offsetTop;
 
-    const keys = await ipc.keys();
-
-    setKeys(keys);
-  }, [ipc]);
+    setHeight(height);
+  }, []);
 
   React.useEffect(() => {
-    getKeys();
-  }, [ipc]);
+    calculateHeight();
+
+    window.addEventListener('resize', calculateHeight);
+
+    return () => {
+      window.removeEventListener('resize', calculateHeight);
+    };
+  }, []);
 
   return (
-    <Grid xs={6} className={clsx(classes.root, className)} item>
+    <Grid
+      id="key-container"
+      xs={6}
+      className={clsx(classes.root, className)}
+      item
+    >
       <Header title="Keys" />
-      <ul className={classes.keys}>
+      <List
+        id="key-list"
+        style={{ height, overflowY: 'scroll' }}
+        className={classes.keys}
+      >
         {keys.map((key) => (
-          <li key={key}>{key}</li>
+          <ListItem button key={key}>
+            <ListItemText primary={key} />
+          </ListItem>
         ))}
-      </ul>
+      </List>
     </Grid>
   );
 };
