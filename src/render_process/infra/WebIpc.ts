@@ -1,4 +1,5 @@
 import { injectable } from 'inversify';
+import { DbInfo } from '../../core/interfaces';
 import * as Messages from '../../core/WindowMessages';
 import { ConnectionOptions, ConnectionResponse } from '../globals/interfaces';
 
@@ -10,6 +11,7 @@ export interface IWebIpc {
    * @returns Connection response, which contains number of dbs + stats, current db keys and current selected db
    */
   connect: (options: ConnectionOptions) => Promise<ConnectionResponse>;
+  switchDb: (db: DbInfo) => Promise<string[]>;
   get: (key: string) => Promise<string>;
   keys: () => Promise<string[]>;
   sendAsync: (value: string) => Promise<unknown>;
@@ -42,6 +44,20 @@ export default class WebIpc implements IWebIpc {
     );
 
     return response;
+  }
+
+  async switchDb(db: DbInfo): Promise<string[]> {
+    const msg: Messages.SwitchDb = {
+      type: Messages.MessageType.SWITCH_DB,
+      db,
+    };
+
+    const response = await window.ipc.sendAsync<{
+      type: Messages.MessageType;
+      keys: string[];
+    }>(Messages.CHANNEL_NAME, msg);
+
+    return response.keys;
   }
 
   async get(key: string): Promise<string> {

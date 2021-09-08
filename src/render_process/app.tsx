@@ -8,19 +8,26 @@ import { diContext } from './infra/diContext';
 import { Container } from 'inversify';
 import WebIpc, { IWebIpc } from './infra/WebIpc';
 
+import { Provider } from 'react-redux';
+import { configureStore } from './store';
+
 const theme = createTheme();
 
 const container = new Container();
 
 container.bind<IWebIpc>(WebIpc).to(WebIpc).inSingletonScope();
 
+const store = configureStore();
+
 const App = () => (
-  <ThemeProvider theme={theme}>
-    <diContext.Provider value={container}>
-      <CssBaseline />
-      <Main />
-    </diContext.Provider>
-  </ThemeProvider>
+  <Provider store={store}>
+    <ThemeProvider theme={theme}>
+      <diContext.Provider value={container}>
+        <CssBaseline />
+        <Main />
+      </diContext.Provider>
+    </ThemeProvider>
+  </Provider>
 );
 
 function render() {
