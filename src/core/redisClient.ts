@@ -2,7 +2,7 @@ import Redis from 'ioredis';
 import { DbInfo } from './interfaces';
 
 export interface IRedisClient {
-  switchDb: (index: number) => Promise<void>;
+  switchDb: (index: number) => Promise<string[]>;
   info: () => Promise<ConnectedResponse>;
   keys: (pattern?: string) => Promise<string[]>;
   get: (key: string) => Promise<unknown>;
@@ -92,7 +92,9 @@ export class RedisClient implements IRedisClient {
     await this.redis.set(key, value);
   }
 
-  async switchDb(index: number): Promise<void> {
+  async switchDb(index: number): Promise<string[]> {
     await this.redis.select(index);
+
+    return await this.keys();
   }
 }

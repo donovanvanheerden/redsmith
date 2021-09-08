@@ -32,6 +32,9 @@ export class MainIpc implements IMainIpc {
           <Messages.CreateConnection>message
         );
         break;
+      case Messages.MessageType.SWITCH_DB:
+        reply = await this._handleSwitchDb(<Messages.SwitchDb>message);
+        break;
       default:
         break;
     }
@@ -55,6 +58,19 @@ export class MainIpc implements IMainIpc {
     const reply: Messages.Connected = {
       type: Messages.MessageType.CONNECTED,
       ...response,
+    };
+
+    return reply;
+  }
+
+  private async _handleSwitchDb(
+    message: Messages.SwitchDb
+  ): Promise<Messages.Message> {
+    const response = await this.redis.switchDb(message.db.index);
+
+    const reply: Messages.DbSwitched = {
+      type: Messages.MessageType.DB_SWITCHED,
+      keys: response,
     };
 
     return reply;
