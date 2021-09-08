@@ -13,17 +13,20 @@ export default makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'flex-end',
-      padding: theme.spacing(0, 1),
+      // padding: theme.spacing(0, 1),
+      flexDirection: 'column',
       // necessary for content to be below app bar
-      ...theme.mixins.toolbar,
+      // ...theme.mixins.toolbar,
     },
     drawerClose: {
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
-      overflowX: 'hidden',
-      width: theme.spacing(8) + 1,
+      // width: '100%',
+      // position: 'relative',
+      // overflowX: 'hidden',
+      // width: theme.spacing(8) + 1,
     },
   })
 );
