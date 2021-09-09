@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { DbInfo } from '../../../core/interfaces';
 import { redisActions } from '../../store/reducers/redis-slice';
+import { formActions } from '../../store/reducers/form-slice';
 
 interface SelectorState {
   dbs: DbInfo[];
@@ -42,6 +43,8 @@ const SideNav = (): JSX.Element => {
       address: '127.0.0.1',
       port: '5379',
     });
+    
+    dispatch(formActions.showForm({showConnectionForm: true}));
 
     // const response = await ipc.connect(opts);
     // console.log(response);
