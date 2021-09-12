@@ -26,17 +26,26 @@ export class MainIpc implements IMainIpc {
       message
     );
 
-    switch (message.type) {
-      case Messages.MessageType.CREATE_CONNECTION:
-        reply = await this._handleCreateConnection(
-          <Messages.CreateConnection>message
-        );
-        break;
-      case Messages.MessageType.SWITCH_DB:
-        reply = await this._handleSwitchDb(<Messages.SwitchDb>message);
-        break;
-      default:
-        break;
+    try {
+      switch (message.type) {
+        case Messages.MessageType.CREATE_CONNECTION:
+          reply = await this._handleCreateConnection(
+            <Messages.CreateConnection>message
+          );
+          break;
+        case Messages.MessageType.SWITCH_DB:
+          reply = await this._handleSwitchDb(<Messages.SwitchDb>message);
+          break;
+        default:
+          break;
+      }
+    } catch (error) {
+      const err: Messages.ErrorMessage = {
+        error: error as string,
+        type: Messages.MessageType.ERROR,
+      };
+
+      reply = err;
     }
 
     if (reply !== null) {
@@ -53,14 +62,24 @@ export class MainIpc implements IMainIpc {
       password: message.password,
     });
 
-    const response = await this.redis.info();
+    try {
+      const response = await this.redis.connect();
 
-    const reply: Messages.Connected = {
-      type: Messages.MessageType.CONNECTED,
-      ...response,
-    };
+      const reply: Messages.Connected = {
+        type: Messages.MessageType.CONNECTED,
+        ...response,
+      };
 
-    return reply;
+      return reply;
+    } catch (error) {
+      this.redis.disconnect();
+
+      console.error('unhandled error: ', error);
+
+      return Promise.reject(
+        `Unable to connect to ${message.name} (${message.host}:${message.port}).`
+      );
+    }
   }
 
   private async _handleSwitchDb(
