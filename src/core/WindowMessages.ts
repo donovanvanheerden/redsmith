@@ -7,6 +7,7 @@ export enum MessageType {
   CONNECTED,
   SWITCH_DB,
   DB_SWITCHED,
+  ERROR,
 }
 
 export interface Message {
@@ -32,4 +33,8 @@ export interface SwitchDb extends Message {
 
 export interface DbSwitched extends Message {
   keys: string[];
+}
+
+export interface ErrorMessage extends Message {
+  error: string;
 }
