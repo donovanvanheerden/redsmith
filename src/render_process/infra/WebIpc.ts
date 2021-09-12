@@ -1,7 +1,7 @@
 import { injectable } from 'inversify';
 import { DbInfo } from '../../core/interfaces';
 import * as Messages from '../../core/WindowMessages';
-import { ConnectionOptions, ConnectionResponse } from '../globals/interfaces';
+import { ConnectionOptions } from '../globals/interfaces';
 
 export interface IWebIpc {
   /**
@@ -10,7 +10,7 @@ export interface IWebIpc {
    * @param options Connection Options for redis
    * @returns Connection response, which contains number of dbs + stats, current db keys and current selected db
    */
-  connect: (options: ConnectionOptions) => Promise<ConnectionResponse>;
+  connect: (options: ConnectionOptions) => Promise<Messages.Connected>;
   switchDb: (db: DbInfo) => Promise<string[]>;
   get: (key: string) => Promise<string>;
   keys: () => Promise<string[]>;
@@ -32,16 +32,19 @@ export default class WebIpc implements IWebIpc {
     this.ipc = window.ipc;
   }
 
-  async connect(options: ConnectionOptions): Promise<ConnectionResponse> {
+  async connect(options: ConnectionOptions): Promise<Messages.Connected> {
     const msg: Messages.CreateConnection = {
       type: Messages.MessageType.CREATE_CONNECTION,
       ...options,
     };
 
-    const response = await window.ipc.sendAsync<ConnectionResponse>(
-      Messages.CHANNEL_NAME,
-      msg
-    );
+    const response = await window.ipc.sendAsync<
+      Messages.Connected & Messages.ErrorMessage
+    >(Messages.CHANNEL_NAME, msg);
+
+    if (response.type === Messages.MessageType.ERROR) {
+      return Promise.reject(response.error);
+    }
 
     return response;
   }

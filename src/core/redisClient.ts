@@ -2,6 +2,8 @@ import Redis from 'ioredis';
 import { DbInfo } from './interfaces';
 
 export interface IRedisClient {
+  connect: () => Promise<ConnectedResponse>;
+  disconnect: () => Promise<void>;
   switchDb: (index: number) => Promise<string[]>;
   info: () => Promise<ConnectedResponse>;
   keys: (pattern?: string) => Promise<string[]>;
@@ -40,14 +42,33 @@ interface ConnectedResponse {
 }
 
 export class RedisClient implements IRedisClient {
+  config: Redis.RedisOptions;
   redis: Redis.Redis;
 
   selectedDb: number;
 
   constructor(config: Redis.RedisOptions) {
-    this.redis = new Redis(config);
-
+    this.config = config;
     this.selectedDb = config.db || 0;
+  }
+
+  async connect(): Promise<ConnectedResponse> {
+    try {
+      this.redis = new Redis({
+        ...this.config,
+        autoResubscribe: false,
+        lazyConnect: true,
+        maxRetriesPerRequest: 0,
+      });
+    } catch (error) {
+      console.log('error occured: ', error);
+    }
+
+    return await this.info();
+  }
+
+  async disconnect(): Promise<void> {
+    this.redis.disconnect();
   }
 
   async info(): Promise<ConnectedResponse> {
