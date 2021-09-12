@@ -4,10 +4,16 @@ import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
+interface AlertMessage {
+  open: boolean;
+  message: string;
+  hideDuration: number;
+}
 interface Props {
   open?: boolean;
   message?: string;
   hideDuration?: number;
+  onClose: (alertMsg: AlertMessage) => void
 }
 
 export default function Alert(props:Props) {
@@ -22,6 +28,7 @@ export default function Alert(props:Props) {
       return;
     }
 
+    props.onClose(null);
     setOpen(false);
   };
 

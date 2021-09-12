@@ -51,7 +51,7 @@ export default function form() {
     const formData = new FormData(event.currentTarget);
 
     const fieldDict: Record<string, string> = {};
-    
+
     formData.forEach((fieldValue, fieldKey) => {
       if (fieldValue === ''){
         fieldDict[fieldKey] = "Please enter value.";
@@ -64,22 +64,26 @@ export default function form() {
       return;
     }
 
-    const response = await ipc.connect({
-      host: formData.get("ConnHost") as string, //'localhost',
-      name: formData.get("ConnName") as string, //'redis',
-      port: parseInt(formData.get("ConnPort") as string), //6379,
-    });
+    try{
+      const response = await ipc.connect({
+        host: formData.get("ConnHost") as string, //'localhost',
+        name: formData.get("ConnName") as string, //'redis',
+        port: parseInt(formData.get("ConnPort") as string), //6379,
+      });
+  
+      dispatch(redisActions.setOnConnected(response));
+      console.log("response", response);
+    }
+    catch(ex){
+      console.log(ex);
+      const alert: AlertMessage = {
+        open: true,
+        message: "An error has occurred: " + ex,
+        hideDuration: 6000,
+      };
 
-    dispatch(redisActions.setOnConnected(response));
-    console.log("response", response);
-
-    const alert: AlertMessage = {
-      open: true,
-      message: "An error has occurred",
-      hideDuration: 1000,
-    };
-
-    setalertMsg(alert);
+      setalertMsg(alert);
+    }
 
     handleClose();
   };
@@ -95,6 +99,7 @@ export default function form() {
           open={alertMsg.open}
           message={alertMsg.message}
           hideDuration={alertMsg.hideDuration}
+          onClose={setalertMsg}
         />
       )}
       <Dialog
