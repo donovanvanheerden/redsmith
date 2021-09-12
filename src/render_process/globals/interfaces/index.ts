@@ -1,5 +1,3 @@
-import { DbInfo } from '../../../core/interfaces';
-
 export interface ConnectionOptions {
   /**
    * The name of the connection
@@ -17,19 +15,4 @@ export interface ConnectionOptions {
    * The password for the connection
    */
   password?: string;
-}
-
-export interface ConnectionResponse {
-  /**
-   * All redis db information
-   */
-  dbs: DbInfo[];
-  /**
-   * selected db keys
-   */
-  keys: string[];
-  /**
-   * selected db
-   */
-  selectedDb: number;
 }
