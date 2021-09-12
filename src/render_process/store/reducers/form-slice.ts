@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface FormState {
-  showConnectionForm: boolean
+  formOpen: boolean
 }
 
 const initialState: FormState = {
-  showConnectionForm: false
+  formOpen: false
 };
 
 export const formSlice = createSlice({

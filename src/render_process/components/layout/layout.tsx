@@ -19,13 +19,9 @@ interface FormState {
 const Layout = (): JSX.Element => {
   const classes = useStyles();
 
-  const { showConnForm } = useSelector<RootState, FormState>((state) => ({
-    showConnForm: state.form.showConnectionForm,
-  }));
-
   return (
-    <Fragment>
-      {showConnForm && <Form />}
+    <React.Fragment>
+      <Form />
       <div className={classes.root}>
         <SideNav />
         <Grid className={classes.content} container>
@@ -33,7 +29,7 @@ const Layout = (): JSX.Element => {
           <ValueDetail />
         </Grid>
       </div>
-    </Fragment>
+    </React.Fragment>
   );
 };
 

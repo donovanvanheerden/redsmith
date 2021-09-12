@@ -38,17 +38,23 @@ const SideNav = (): JSX.Element => {
   const ipc = useIpc();
 
   const handleCreateConnection = React.useCallback(async () => {
-    console.log({
-      name: 'localhost',
-      address: '127.0.0.1',
-      port: '5379',
-    });
-    
-    dispatch(formActions.showForm({showConnectionForm: true}));
+    // console.log({
+    //   name: 'localhost',
+    //   address: '127.0.0.1',
+    //   port: '6379',
+    // });
 
-    // const response = await ipc.connect(opts);
-    // console.log(response);
-    // dispatch(redisActions.setOnConnected(response));
+    const connection = {
+      formOpen: true, 
+      name: '',
+      host: '',
+      port: 0
+    }
+    
+    dispatch(formActions.showForm(connection));
+
+    //TODO: opts - hardcode values for this object
+    
 
     // const syncValue = ipc.send('localhost');
     // const asyncValue = await ipc.sendAsync('localhost');
