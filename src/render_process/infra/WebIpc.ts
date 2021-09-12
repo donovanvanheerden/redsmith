@@ -38,15 +38,10 @@ export default class WebIpc implements IWebIpc {
       ...options,
     };
 
-    const response = await window.ipc.sendAsync<
-      Messages.Connected & Messages.ErrorMessage
-    >(Messages.CHANNEL_NAME, msg);
-
-    if (response.type === Messages.MessageType.ERROR) {
-      return Promise.reject(response.error);
-    }
-
-    return response;
+    return await window.ipc.sendAsync<Messages.Connected>(
+      Messages.CHANNEL_NAME,
+      msg
+    );
   }
 
   async switchDb(db: DbInfo): Promise<string[]> {
@@ -55,10 +50,10 @@ export default class WebIpc implements IWebIpc {
       db,
     };
 
-    const response = await window.ipc.sendAsync<{
-      type: Messages.MessageType;
-      keys: string[];
-    }>(Messages.CHANNEL_NAME, msg);
+    const response = await window.ipc.sendAsync<Messages.DbSwitched>(
+      Messages.CHANNEL_NAME,
+      msg
+    );
 
     return response.keys;
   }

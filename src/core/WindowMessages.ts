@@ -36,5 +36,5 @@ export interface DbSwitched extends Message {
 }
 
 export interface ErrorMessage extends Message {
-  error: string;
+  message: string;
 }
