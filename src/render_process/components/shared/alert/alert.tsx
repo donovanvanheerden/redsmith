@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
@@ -13,23 +12,26 @@ interface Props {
   open?: boolean;
   message?: string;
   hideDuration?: number;
-  onClose: (alertMsg: AlertMessage) => void
+  onClose: (alertMsg: AlertMessage) => void;
 }
 
-export default function Alert(props:Props) {
+export default function Alert(props: Props): JSX.Element {
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
     setOpen(props.open);
   }, []);
 
-  const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: string) => {
+  const handleClose = (
+    event: React.SyntheticEvent | React.MouseEvent,
+    reason?: string
+  ) => {
     if (reason === 'clickaway') {
       return;
     }
 
-    props.onClose(null);
     setOpen(false);
+    props.onClose(null);
   };
 
   return (
@@ -48,7 +50,12 @@ export default function Alert(props:Props) {
             {/* <Button color="secondary" size="small" onClick={handleClose}>
               UNDO
             </Button> */}
-            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={handleClose}
+            >
               <CloseIcon fontSize="small" />
             </IconButton>
           </React.Fragment>

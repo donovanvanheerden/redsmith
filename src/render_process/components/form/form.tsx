@@ -1,31 +1,21 @@
-import React, { useState } from "react";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import React, { useState } from 'react';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
-import Paper from "@material-ui/core/Paper";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import { Alert } from "../shared";
+import { Alert } from '../shared';
 
-import { RootState } from "../../store";
-import { useDispatch, useSelector } from "react-redux";
-import { useIpc } from "../../hooks/useFromDi";
-import { formActions } from "../../store/reducers/form-slice";
-import { redisActions } from "../../store/reducers/redis-slice";
+import { RootState } from '../../store';
+import { useDispatch, useSelector } from 'react-redux';
+import { useIpc } from '../../hooks/useFromDi';
+import { formActions } from '../../store/reducers/form-slice';
+import { redisActions } from '../../store/reducers/redis-slice';
 
 interface FormState {
   showConnForm: boolean;
-}
-
-interface ConnectionState {
-  connName: string;
-  connHost: string;
-  connPort: number;
 }
 
 interface AlertMessage {
@@ -34,7 +24,7 @@ interface AlertMessage {
   hideDuration: number;
 }
 
-export default function form() {
+export default function Form(): JSX.Element {
   const [alertMsg, setalertMsg] = React.useState<AlertMessage>(null);
   const [errorMsgDict, seterrorMsgDict] = useState<Record<string, string>>({});
 
@@ -53,32 +43,32 @@ export default function form() {
     const fieldDict: Record<string, string> = {};
 
     formData.forEach((fieldValue, fieldKey) => {
-      if (fieldValue === ''){
-        fieldDict[fieldKey] = "Please enter value.";
+      if (fieldValue === '') {
+        fieldDict[fieldKey] = 'Please enter value.';
       }
     });
 
-    if (Object.keys(fieldDict).length > 0){
+    if (Object.keys(fieldDict).length > 0) {
       console.log('fieldDict', fieldDict);
       seterrorMsgDict(fieldDict);
       return;
     }
 
-    try{
+    try {
       const response = await ipc.connect({
-        host: formData.get("ConnHost") as string, //'localhost',
-        name: formData.get("ConnName") as string, //'redis',
-        port: parseInt(formData.get("ConnPort") as string), //6379,
+        host: formData.get('ConnAddress') as string, //'localhost',
+        name: formData.get('ConnName') as string, //'redis',
+        port: parseInt(formData.get('ConnPort') as string), //6379,
       });
-  
+
       dispatch(redisActions.setOnConnected(response));
-      console.log("response", response);
-    }
-    catch(ex){
+      console.log('response', response);
+    } catch (ex) {
       console.log(ex);
+
       const alert: AlertMessage = {
         open: true,
-        message: "An error has occurred: " + ex,
+        message: 'An error has occurred: ' + ex.message,
         hideDuration: 6000,
       };
 
@@ -126,8 +116,8 @@ export default function form() {
               name="ConnName"
               variant="filled"
               label="Name"
-              error={Boolean(errorMsgDict["ConnName"])}
-              helperText={errorMsgDict["ConnName"]}
+              error={Boolean(errorMsgDict['ConnName'])}
+              helperText={errorMsgDict['ConnName']}
             />
             <br />
             <TextField
@@ -135,8 +125,8 @@ export default function form() {
               name="ConnAddress"
               variant="filled"
               label="Host"
-              error={Boolean(errorMsgDict["ConnAddress"])}
-              helperText={errorMsgDict["ConnAddress"]}
+              error={Boolean(errorMsgDict['ConnAddress'])}
+              helperText={errorMsgDict['ConnAddress']}
             />
             <TextField
               id="Port"
@@ -147,8 +137,8 @@ export default function form() {
               InputLabelProps={{
                 shrink: true,
               }}
-              error={Boolean(errorMsgDict["ConnPort"])}
-              helperText={errorMsgDict["ConnPort"]}
+              error={Boolean(errorMsgDict['ConnPort'])}
+              helperText={errorMsgDict['ConnPort']}
             />
             <br />
             <TextField id="Namespace" label="Namespace" />
