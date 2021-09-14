@@ -41,7 +41,7 @@ export class MainIpc implements IMainIpc {
       }
     } catch (error) {
       const err: Messages.ErrorMessage = {
-        error: error as string,
+        message: error as string,
         type: Messages.MessageType.ERROR,
       };
 

@@ -1,24 +1,28 @@
 import { ipcRenderer, contextBridge } from 'electron';
+import * as Messages from './core/WindowMessages';
 
-interface IpcWeb {
-  send: (channel: string, ...args: unknown[]) => unknown;
+export interface IpcWeb {
   sendAsync: <T>(channel: string, ...args: unknown[]) => Promise<T>;
-  receive: (channel: string, handler: (...args: unknown[]) => void) => void;
 }
 
 contextBridge.exposeInMainWorld('ipc', {
-  send: (channel, ...args) => {
-    return ipcRenderer.sendSync(channel, ...args);
-  },
   sendAsync: async (channel, ...args) => {
     return await new Promise((resolve, reject) => {
+      if (channel !== Messages.CHANNEL_NAME)
+        return reject('Unknown Message Channel');
+
       ipcRenderer.send(channel, ...args);
 
-      // const replyChannel = channel.replace('message', 'reply');
-      // const errChannel = channel.replace('message', 'error');
-
       ipcRenderer.on(channel, (_, response) => {
-        resolve(response);
+        const responseMessage = response as Messages.Message;
+
+        const isError = responseMessage.type === Messages.MessageType.ERROR;
+
+        if (isError) {
+          reject(response);
+        } else {
+          resolve(response);
+        }
 
         ipcRenderer.removeAllListeners(channel);
       });
@@ -28,14 +32,6 @@ contextBridge.exposeInMainWorld('ipc', {
 
         ipcRenderer.removeAllListeners(channel);
       });
-    });
-  },
-  receive: (channel, handler) => {
-    ipcRenderer.on(channel, (_, ...args) => {
-      handler(...args);
-
-      // remove listeners after event is handled?
-      ipcRenderer.removeAllListeners(channel);
     });
   },
 } as IpcWeb);
