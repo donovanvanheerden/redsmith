@@ -19,6 +19,8 @@ import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import { Header } from '../header';
 
 import * as monaco from 'monaco-editor';
+import '../../disabledActions';
+
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 
@@ -48,7 +50,7 @@ const ValueDetail = (props: Props): JSX.Element => {
   React.useEffect(() => {
     if (!monacoEditor.current) {
       monacoEditor.current = monaco.editor.create(monacoContainer.current, {
-        value: JSON.stringify({ test: 'hello', world: 'value' }),
+        value: '',
         language,
       });
     }
@@ -153,6 +155,7 @@ const ValueDetail = (props: Props): JSX.Element => {
           <Select value={language} onChange={handleLanguageChange}>
             <MenuItem value="text">Text</MenuItem>
             <MenuItem value="json">JSON</MenuItem>
+            <MenuItem value="xml">XML</MenuItem>
           </Select>
         </Toolbar>
       </div>
