@@ -3,14 +3,10 @@ import useStyles from "./keySearch.styles";
 import clsx from "clsx";
 import { RootState } from "../../store";
 
-import { useDispatch, useSelector } from 'react-redux';
-import { redisActions } from '../../store/reducers/redis-slice';
+import { useDispatch, useSelector } from "react-redux";
+import { redisActions } from "../../store/reducers/redis-slice";
 
-
-import {
-  Button,
-  TextField,
-} from "@material-ui/core";
+import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 
 interface Props {
   className?: string;
@@ -30,7 +26,9 @@ const KeySearch = ({ className }: Props): JSX.Element => {
     const searchKey = formData.get("searchKey").toString();
     console.log("searchKey:", searchKey);
 
-    var filteredKeys = [...keys].filter(key => key.toLowerCase().includes(searchKey.toLowerCase()));
+    var filteredKeys = [...keys].filter((key) =>
+      key.toLowerCase().includes(searchKey.toLowerCase())
+    );
     console.log("filtered keys:", filteredKeys);
 
     dispatch(redisActions.filterKeys(filteredKeys));
@@ -44,7 +42,22 @@ const KeySearch = ({ className }: Props): JSX.Element => {
           label="Search field"
           type="search"
           variant="filled"
-        />
+        /> &nbsp;&nbsp;
+      <FormControl>
+        <InputLabel id="demo-simple-select-label">Age</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          // value={age}
+          // onChange={handleChange}
+        >
+          <MenuItem value={10}>Containing</MenuItem>
+          <MenuItem value={20}>Starting With</MenuItem>
+          <MenuItem value={30}>Ending With</MenuItem>
+          <MenuItem value={40}>Matching Pattern</MenuItem>
+        </Select>
+      </FormControl>
+      &nbsp;&nbsp;
         <Button variant="contained" color="primary" type="submit">
           Search
         </Button>
