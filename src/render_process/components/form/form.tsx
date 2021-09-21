@@ -43,7 +43,7 @@ export default function Form(): JSX.Element {
     const fieldDict: Record<string, string> = {};
 
     formData.forEach((fieldValue, fieldKey) => {
-      if (fieldValue === '') {
+      if (fieldValue === '' && fieldKey !== 'ConnPassword') {
         fieldDict[fieldKey] = 'Please enter value.';
       }
     });
@@ -59,6 +59,7 @@ export default function Form(): JSX.Element {
         host: formData.get('ConnAddress') as string, //'localhost',
         name: formData.get('ConnName') as string, //'redis',
         port: parseInt(formData.get('ConnPort') as string), //6379,
+        password: formData.get('ConnPassword') as string,
       });
 
       dispatch(redisActions.setOnConnected(response));
@@ -139,6 +140,19 @@ export default function Form(): JSX.Element {
               }}
               error={Boolean(errorMsgDict['ConnPort'])}
               helperText={errorMsgDict['ConnPort']}
+            />
+            <br />
+            <TextField
+              id="Password"
+              name="ConnPassword"
+              variant="filled"
+              label="Password"
+              type="password"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              error={Boolean(errorMsgDict['ConnPassword'])}
+              helperText={errorMsgDict['ConnPassword']}
             />
             <br />
             <TextField id="Namespace" label="Namespace" />

@@ -7,7 +7,7 @@ export interface IRedisClient {
   switchDb: (index: number) => Promise<string[]>;
   info: () => Promise<ConnectedResponse>;
   keys: (pattern?: string) => Promise<string[]>;
-  get: (key: string) => Promise<unknown>;
+  get: (key: string) => Promise<string>;
   setString: (key: string, value: string) => Promise<void>;
 }
 
@@ -105,7 +105,7 @@ export class RedisClient implements IRedisClient {
     return keys;
   }
 
-  async get(key: string): Promise<unknown> {
+  async get(key: string): Promise<string> {
     return await this.redis.get(key);
   }
 
