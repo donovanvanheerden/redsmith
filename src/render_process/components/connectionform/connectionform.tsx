@@ -24,7 +24,7 @@ interface AlertMessage {
   hideDuration: number;
 }
 
-export default function Form(): JSX.Element {
+export default function ConnectionForm(): JSX.Element {
   const [alertMsg, setalertMsg] = React.useState<AlertMessage>(null);
   const [errorMsgDict, seterrorMsgDict] = useState<Record<string, string>>({});
 
@@ -118,6 +118,7 @@ export default function Form(): JSX.Element {
               label="Name"
               error={Boolean(errorMsgDict['ConnName'])}
               helperText={errorMsgDict['ConnName']}
+              defaultValue="localhots"
             />
             <br />
             <TextField
@@ -127,6 +128,7 @@ export default function Form(): JSX.Element {
               label="Host"
               error={Boolean(errorMsgDict['ConnAddress'])}
               helperText={errorMsgDict['ConnAddress']}
+              defaultValue="localhost"
             />
             <TextField
               id="Port"
@@ -139,6 +141,7 @@ export default function Form(): JSX.Element {
               }}
               error={Boolean(errorMsgDict['ConnPort'])}
               helperText={errorMsgDict['ConnPort']}
+              defaultValue="6379"
             />
             <br />
             <TextField id="Namespace" label="Namespace" />

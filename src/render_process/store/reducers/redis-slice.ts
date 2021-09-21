@@ -31,6 +31,12 @@ export const redisSlice = createSlice({
         ...action.payload,
       };
     },
+    filterKeys: (state, action: PayloadAction<string[]>) => {
+      return {
+        ...state,
+        keys: action.payload
+      }
+    }
   },
 });
 

@@ -8,7 +8,7 @@ import { ValueDetail } from "../valueDetail";
 import useStyles from "./layout.styles";
 import { RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
-import { Form } from "../form";
+import { ConnectionForm } from "../connectionform";
 
 import { formActions } from '../../store/reducers/form-slice';
 
@@ -21,7 +21,7 @@ const Layout = (): JSX.Element => {
 
   return (
     <React.Fragment>
-      <Form />
+      <ConnectionForm />
       <div className={classes.root}>
         <SideNav />
         <Grid className={classes.content} container>
