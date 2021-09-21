@@ -19,6 +19,13 @@ export interface IWebIpc {
    * @returns keys for selected Redis Db
    */
   switchDb: (db: DbInfo) => Promise<string[]>;
+
+  /**
+   * Returns value for key
+   * @param key string representation for redisKey
+   * @returns value for redis key
+   */
+  getValue: (key: string) => Promise<Messages.GetStringValue>;
 }
 
 @injectable()
@@ -44,5 +51,17 @@ export default class WebIpc implements IWebIpc {
     );
 
     return response.keys;
+  }
+
+  async getValue(key: string): Promise<Messages.GetStringValue> {
+    const msg: Messages.GetStringValue = {
+      type: Messages.MessageType.GET_VALUE,
+      key,
+    };
+
+    return await ipc.sendAsync<Messages.GetStringValue>(
+      Messages.CHANNEL_NAME,
+      msg
+    );
   }
 }

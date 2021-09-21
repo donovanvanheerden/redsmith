@@ -36,6 +36,11 @@ export class MainIpc implements IMainIpc {
         case Messages.MessageType.SWITCH_DB:
           reply = await this._handleSwitchDb(<Messages.SwitchDb>message);
           break;
+        case Messages.MessageType.GET_VALUE:
+          reply = await this._handleGetStringValue(
+            <Messages.GetStringValue>message
+          );
+          break;
         default:
           break;
       }
@@ -90,6 +95,20 @@ export class MainIpc implements IMainIpc {
     const reply: Messages.DbSwitched = {
       type: Messages.MessageType.DB_SWITCHED,
       keys: response,
+    };
+
+    return reply;
+  }
+
+  private async _handleGetStringValue(
+    message: Messages.GetStringValue
+  ): Promise<Messages.Message> {
+    const response = await this.redis.get(message.key);
+
+    const reply: Messages.GetStringValue = {
+      type: Messages.MessageType.GET_VALUE,
+      ...message,
+      value: response,
     };
 
     return reply;

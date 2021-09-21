@@ -5,8 +5,10 @@ import { Button, Grid, List, ListItem, ListItemText, TextField } from '@material
 
 import { Header } from '../header';
 import { RootState } from '../../store';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useIpc } from '../../hooks/useFromDi';
 import { KeySearch } from '../keysearch';
+import { redisActions } from '../../store/reducers/redis-slice';
 
 interface Props {
   className?: string;
@@ -17,6 +19,10 @@ const KeyList = ({ className }: Props): JSX.Element => {
   const classes = useStyles();
   const keys = useSelector<RootState, string[]>((state) => state.redis.keys);
   console.log("keys:", keys);
+
+  const dispatch = useDispatch();
+
+  const ipc = useIpc();
 
   const [height, setHeight] = React.useState(0);
 
@@ -38,6 +44,12 @@ const KeyList = ({ className }: Props): JSX.Element => {
     };
   }, []);
 
+  const handleKeySelection = (key: string) => async () => {
+    const { value } = await ipc.getValue(key);
+
+    dispatch(redisActions.setRedisKeySelection({ key, value }));
+  };
+
   return (
     <Grid
       id="key-container"
@@ -54,7 +66,7 @@ const KeyList = ({ className }: Props): JSX.Element => {
         className={classes.keys}
       >
         {keys.map((key) => (
-          <ListItem button key={key}>
+          <ListItem button onClick={handleKeySelection(key)} key={key}>
             <ListItemText primary={key} />
           </ListItem>
         ))}

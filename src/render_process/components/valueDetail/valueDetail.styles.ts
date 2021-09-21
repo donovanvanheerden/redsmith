@@ -13,6 +13,10 @@ const styles = makeStyles(({ breakpoints, spacing, palette }: Theme) =>
     buttonToolbar: {
       minHeight: spacing(),
     },
+    editor: {
+      height: '100%',
+      width: '100%',
+    },
   })
 );
 
