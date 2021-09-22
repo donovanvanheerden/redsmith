@@ -37,6 +37,8 @@ interface SelectorState {
 }
 
 const ValueDetail = (props: Props): JSX.Element => {
+  const changeTracker = React.useRef<monaco.IDisposable>();
+
   const { value: redisValue, key: redisKey } = useSelector<
     RootState,
     SelectorState
@@ -44,6 +46,8 @@ const ValueDetail = (props: Props): JSX.Element => {
     key: state.redis.selectedKey,
     value: state.redis.value || '',
   }));
+
+  const [canSave, setCanSave] = React.useState(false);
 
   const monacoEditor = React.useRef<monaco.editor.IStandaloneCodeEditor>();
   const [size, setSize] = React.useState<{ height: number; width: number }>({
@@ -61,6 +65,12 @@ const ValueDetail = (props: Props): JSX.Element => {
 
   const hasKey = Boolean(redisKey);
 
+  const handleTrackChanges = React.useCallback(() => {
+    const exact = redisValue === monacoEditor.current.getValue();
+
+    if (!exact) setCanSave(true);
+  }, [redisValue]);
+
   React.useEffect(() => {
     if (!redisKey && monacoEditor.current) {
       monacoEditor.current.dispose();
@@ -77,7 +87,12 @@ const ValueDetail = (props: Props): JSX.Element => {
     } else {
       setLanguage('text');
     }
-  }, [redisKey]);
+
+    if (changeTracker.current) changeTracker.current.dispose();
+
+    changeTracker.current =
+      monacoEditor.current.onDidChangeModelContent(handleTrackChanges);
+  }, [redisKey, handleTrackChanges]);
 
   React.useEffect(() => {
     if (!monacoEditor.current) return;
@@ -96,7 +111,9 @@ const ValueDetail = (props: Props): JSX.Element => {
   React.useEffect(() => {
     if (!monacoEditor.current) return;
 
-    monacoEditor.current.setValue(redisValue);
+    if (monacoEditor.current.getValue() !== redisValue) {
+      monacoEditor.current.setValue(redisValue);
+    }
   }, [redisValue]);
 
   const calculateBounds = React.useCallback(() => {
@@ -125,13 +142,23 @@ const ValueDetail = (props: Props): JSX.Element => {
     setLanguage(event.target.value);
   };
 
-  const handleRefresh = React.useCallback(async () => {
+  const handleSave = async () => {
+    setCanSave(false);
+
+    const value = monacoEditor.current.getValue();
+
+    void ipc.setValue(redisKey, value);
+
+    dispatch(redisActions.setRedisKeySelection({ key: redisKey, value }));
+  };
+
+  const handleRefresh = async () => {
     const { value } = await ipc.getValue(redisKey);
 
     dispatch(redisActions.setRedisKeySelection({ key: redisKey, value }));
 
     monacoEditor.current.setValue(value);
-  }, [redisKey]);
+  };
 
   return (
     <Grid
@@ -145,7 +172,7 @@ const ValueDetail = (props: Props): JSX.Element => {
       <Toolbar id="value-toolbar" className={classes.buttonToolbar}>
         <Tooltip title="Save">
           <span>
-            <IconButton disabled={!hasKey}>
+            <IconButton onClick={handleSave} disabled={!hasKey || !canSave}>
               <SaveOutlinedIcon />
             </IconButton>
           </span>

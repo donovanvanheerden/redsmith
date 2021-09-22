@@ -41,6 +41,9 @@ export class MainIpc implements IMainIpc {
             <Messages.GetStringValue>message
           );
           break;
+        case Messages.MessageType.SET_STRING_VALUE:
+          await this._handleSetStringValue(<Messages.SetStringValue>message);
+          break;
         default:
           break;
       }
@@ -112,5 +115,11 @@ export class MainIpc implements IMainIpc {
     };
 
     return reply;
+  }
+
+  private async _handleSetStringValue(
+    message: Messages.SetStringValue
+  ): Promise<void> {
+    await this.redis.setString(message.key, message.value);
   }
 }

@@ -26,6 +26,12 @@ export interface IWebIpc {
    * @returns value for redis key
    */
   getValue: (key: string) => Promise<Messages.GetStringValue>;
+  /**
+   * Sets value for key
+   * @param key string representation for redisKey
+   * @param value string value for redisKey
+   */
+  setValue: (key: string, value: string) => Promise<void>;
 }
 
 @injectable()
@@ -63,5 +69,15 @@ export default class WebIpc implements IWebIpc {
       Messages.CHANNEL_NAME,
       msg
     );
+  }
+
+  async setValue(key: string, value: string): Promise<void> {
+    const msg: Messages.SetStringValue = {
+      type: Messages.MessageType.SET_STRING_VALUE,
+      key,
+      value,
+    };
+
+    await ipc.sendAsync<Messages.SetStringValue>(Messages.CHANNEL_NAME, msg);
   }
 }
