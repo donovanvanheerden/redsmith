@@ -51,7 +51,8 @@ export const redisSlice = createSlice({
     ) => {
       return {
         ...state,
-        ...action.payload,
+        selectedKey: action.payload.key,
+        value: action.payload.value,
       };
     },
   },
