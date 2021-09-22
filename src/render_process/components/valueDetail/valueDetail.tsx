@@ -25,6 +25,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { useIpc } from '../../hooks/useFromDi';
 import { redisActions } from '../../store/reducers/redis-slice';
+import useConfirmModal from '../../hooks/useConfirmModal';
 
 interface Props {
   className?: string;
@@ -38,6 +39,7 @@ interface SelectorState {
 
 const ValueDetail = (props: Props): JSX.Element => {
   const changeTracker = React.useRef<monaco.IDisposable>();
+  const { Confirm, handleShow } = useConfirmModal();
 
   const { value: redisValue, key: redisKey } = useSelector<
     RootState,
@@ -160,6 +162,18 @@ const ValueDetail = (props: Props): JSX.Element => {
     monacoEditor.current.setValue(value);
   };
 
+  const handleRemove = async () => {
+    const confirmed = await handleShow(
+      `Are you sure you wish to remove the key "${redisKey}"?`
+    );
+
+    if (!confirmed) return;
+
+    void ipc.removeKeys(redisKey);
+
+    dispatch(redisActions.removeKey(redisKey));
+  };
+
   return (
     <Grid
       id="value-container"
@@ -200,7 +214,7 @@ const ValueDetail = (props: Props): JSX.Element => {
         </Tooltip>
         <Tooltip title="Delete">
           <span>
-            <IconButton disabled={!hasKey}>
+            <IconButton onClick={handleRemove} disabled={!hasKey}>
               <DeleteOutlineOutlinedIcon />
             </IconButton>
           </span>
@@ -222,6 +236,7 @@ const ValueDetail = (props: Props): JSX.Element => {
           </div>
         </React.Fragment>
       )}
+      <Confirm />
     </Grid>
   );
 };
