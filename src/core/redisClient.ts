@@ -9,6 +9,7 @@ export interface IRedisClient {
   keys: (pattern?: string) => Promise<string[]>;
   getString: (key: string) => Promise<string>;
   setString: (key: string, value: string) => Promise<void>;
+  removeKeys: (...key: string[]) => Promise<boolean>;
 }
 
 const defaultDb = (index: number): DbInfo => ({
@@ -117,5 +118,11 @@ export class RedisClient implements IRedisClient {
     await this.redis.select(index);
 
     return await this.keys();
+  }
+
+  async removeKeys(...key: string[]): Promise<boolean> {
+    const affected = await this.redis.del(key);
+
+    return affected > 0;
   }
 }

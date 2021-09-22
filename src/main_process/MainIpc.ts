@@ -44,6 +44,9 @@ export class MainIpc implements IMainIpc {
         case Messages.MessageType.SET_STRING_VALUE:
           await this._handleSetStringValue(<Messages.SetStringValue>message);
           break;
+        case Messages.MessageType.REMOVE_KEY:
+          await this._handleRemoveKey(<Messages.RemoveKey>message);
+          break;
         default:
           break;
       }
@@ -121,5 +124,9 @@ export class MainIpc implements IMainIpc {
     message: Messages.SetStringValue
   ): Promise<void> {
     await this.redis.setString(message.key, message.value);
+  }
+
+  private async _handleRemoveKey(message: Messages.RemoveKey): Promise<void> {
+    await this.redis.removeKeys(...message.keys);
   }
 }
