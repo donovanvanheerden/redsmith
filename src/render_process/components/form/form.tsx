@@ -49,21 +49,19 @@ export default function Form(): JSX.Element {
     });
 
     if (Object.keys(fieldDict).length > 0) {
-      console.log('fieldDict', fieldDict);
       seterrorMsgDict(fieldDict);
       return;
     }
 
     try {
       const response = await ipc.connect({
-        host: formData.get('ConnAddress') as string, //'localhost',
-        name: formData.get('ConnName') as string, //'redis',
-        port: parseInt(formData.get('ConnPort') as string), //6379,
-        password: formData.get('ConnPassword') as string,
+        host: formData.get('ConnAddress').toString(),
+        name: formData.get('ConnName').toString(),
+        port: parseInt(formData.get('ConnPort').toString()),
+        password: formData.get('ConnPassword').toString(),
       });
 
       dispatch(redisActions.setOnConnected(response));
-      console.log('response', response);
     } catch (ex) {
       console.log(ex);
 
