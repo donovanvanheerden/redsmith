@@ -30,8 +30,18 @@ export const redisSlice = createSlice({
       return action.payload;
     },
     switchDb: (state, action: PayloadAction<SwitchDb>) => {
+      const dbs = [...state.dbs];
+      const idx = dbs.findIndex((d) => d.index === action.payload.selectedDb);
+
+      if (dbs[idx].keys != action.payload.keys.length) {
+        dbs.splice(idx, 1, { ...dbs[idx], keys: action.payload.keys.length });
+      }
+
       return {
         ...state,
+        dbs,
+        selectedKey: null,
+        value: null,
         ...action.payload,
       };
     },
