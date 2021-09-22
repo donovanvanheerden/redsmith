@@ -103,7 +103,7 @@ export class MainIpc implements IMainIpc {
   private async _handleGetStringValue(
     message: Messages.GetStringValue
   ): Promise<Messages.Message> {
-    const response = await this.redis.get(message.key);
+    const response = await this.redis.getString(message.key);
 
     const reply: Messages.GetStringValue = {
       type: Messages.MessageType.GET_VALUE,
