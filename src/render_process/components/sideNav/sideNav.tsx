@@ -3,13 +3,9 @@ import clsx from 'clsx';
 
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-
-import StorageIcon from '@material-ui/icons/Storage';
 
 import AddIcon from '@material-ui/icons/Add';
 
@@ -38,29 +34,14 @@ const SideNav = (): JSX.Element => {
   const ipc = useIpc();
 
   const handleCreateConnection = React.useCallback(async () => {
-    // console.log({
-    //   name: 'localhost',
-    //   address: '127.0.0.1',
-    //   port: '6379',
-    // });
-
     const connection = {
-      formOpen: true, 
+      formOpen: true,
       name: '',
       host: '',
-      port: 0
-    }
-    
+      port: 0,
+    };
+
     dispatch(formActions.showForm(connection));
-
-    //TODO: opts - hardcode values for this object
-    
-
-    // const syncValue = ipc.send('localhost');
-    // const asyncValue = await ipc.sendAsync('localhost');
-
-    // console.log('syncValue: ', syncValue);
-    // console.log('asyncValue: ', asyncValue);
   }, []);
 
   const handleSwitchDb = (db: DbInfo) => async () => {
@@ -120,17 +101,6 @@ const SideNav = (): JSX.Element => {
           ))}
         </List>
       </div>
-      <Divider />
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text) => (
-          <ListItem button key={text}>
-            <ListItemIcon>
-              <StorageIcon />
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
     </Drawer>
   );
 };
