@@ -55,6 +55,22 @@ export const redisSlice = createSlice({
         value: action.payload.value,
       };
     },
+    removeKey: (state, action: PayloadAction<string>) => {
+      const keys = [...state.keys].filter((key) => key !== action.payload);
+
+      const dbs = [...state.dbs];
+      const dIdx = dbs.findIndex((d) => d.index === state.selectedDb);
+
+      if (dbs[dIdx].keys != keys.length) {
+        dbs.splice(dIdx, 1, { ...dbs[dIdx], keys: keys.length });
+      }
+
+      if (state.selectedKey === action.payload) {
+        return { ...state, dbs, keys, selectedKey: null, value: null };
+      }
+
+      return { ...state, dbs, keys };
+    },
   },
 });
 
