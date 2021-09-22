@@ -8,6 +8,8 @@ export enum MessageType {
   SWITCH_DB,
   DB_SWITCHED,
   GET_VALUE,
+  SET_STRING_VALUE,
+  REMOVE_KEY,
   ERROR,
 }
 
@@ -39,6 +41,15 @@ export interface DbSwitched extends Message {
 export interface GetStringValue extends Message {
   key: string;
   value?: string;
+}
+
+export interface SetStringValue extends Message {
+  key: string;
+  value: string;
+}
+
+export interface RemoveKey extends Message {
+  keys: string[];
 }
 
 export interface ErrorMessage extends Message {

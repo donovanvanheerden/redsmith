@@ -41,6 +41,12 @@ export class MainIpc implements IMainIpc {
             <Messages.GetStringValue>message
           );
           break;
+        case Messages.MessageType.SET_STRING_VALUE:
+          await this._handleSetStringValue(<Messages.SetStringValue>message);
+          break;
+        case Messages.MessageType.REMOVE_KEY:
+          await this._handleRemoveKey(<Messages.RemoveKey>message);
+          break;
         default:
           break;
       }
@@ -103,7 +109,7 @@ export class MainIpc implements IMainIpc {
   private async _handleGetStringValue(
     message: Messages.GetStringValue
   ): Promise<Messages.Message> {
-    const response = await this.redis.get(message.key);
+    const response = await this.redis.getString(message.key);
 
     const reply: Messages.GetStringValue = {
       type: Messages.MessageType.GET_VALUE,
@@ -112,5 +118,15 @@ export class MainIpc implements IMainIpc {
     };
 
     return reply;
+  }
+
+  private async _handleSetStringValue(
+    message: Messages.SetStringValue
+  ): Promise<void> {
+    await this.redis.setString(message.key, message.value);
+  }
+
+  private async _handleRemoveKey(message: Messages.RemoveKey): Promise<void> {
+    await this.redis.removeKeys(...message.keys);
   }
 }

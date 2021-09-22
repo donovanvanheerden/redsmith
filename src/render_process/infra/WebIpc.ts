@@ -26,6 +26,17 @@ export interface IWebIpc {
    * @returns value for redis key
    */
   getValue: (key: string) => Promise<Messages.GetStringValue>;
+  /**
+   * Sets value for key
+   * @param key string representation for redisKey
+   * @param value string value for redisKey
+   */
+  setValue: (key: string, value: string) => Promise<void>;
+  /**
+   * Removes the keys specified
+   * @param keys array of keys to remove
+   */
+  removeKeys: (...key: string[]) => Promise<void>;
 }
 
 @injectable()
@@ -36,7 +47,7 @@ export default class WebIpc implements IWebIpc {
       ...options,
     };
 
-    return await ipc.sendAsync<Messages.Connected>(Messages.CHANNEL_NAME, msg);
+    return await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
   }
 
   async switchDb(db: DbInfo): Promise<string[]> {
@@ -59,9 +70,25 @@ export default class WebIpc implements IWebIpc {
       key,
     };
 
-    return await ipc.sendAsync<Messages.GetStringValue>(
-      Messages.CHANNEL_NAME,
-      msg
-    );
+    return await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
+  }
+
+  async setValue(key: string, value: string): Promise<void> {
+    const msg: Messages.SetStringValue = {
+      type: Messages.MessageType.SET_STRING_VALUE,
+      key,
+      value,
+    };
+
+    await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
+  }
+
+  async removeKeys(...keys: string[]): Promise<void> {
+    const msg: Messages.RemoveKey = {
+      type: Messages.MessageType.REMOVE_KEY,
+      keys,
+    };
+
+    await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
   }
 }
