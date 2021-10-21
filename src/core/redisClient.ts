@@ -10,6 +10,7 @@ export interface IRedisClient {
   getString: (key: string) => Promise<string>;
   setString: (key: string, value: string) => Promise<void>;
   removeKeys: (...key: string[]) => Promise<boolean>;
+  renameKey: (key: string, newName: string) => Promise<boolean>;
 }
 
 const defaultDb = (index: number): DbInfo => ({
@@ -124,5 +125,11 @@ export class RedisClient implements IRedisClient {
     const affected = await this.redis.del(key);
 
     return affected > 0;
+  }
+
+  async renameKey(key: string, newName: string): Promise<boolean> {
+    const response = await this.redis.rename(key, newName);
+
+    return response !== 'OK';
   }
 }
