@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 
-import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import { createTheme, CssBaseline, ThemeProvider, Theme, StyledEngineProvider } from '@mui/material';
+
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import Main from './pages/Main';
@@ -10,6 +11,13 @@ import WebIpc, { IWebIpc } from './infra/WebIpc';
 
 import { Provider } from 'react-redux';
 import { configureStore } from './store';
+
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
+
 
 const theme = createTheme();
 
@@ -21,12 +29,14 @@ const store = configureStore();
 
 const App = () => (
   <Provider store={store}>
-    <ThemeProvider theme={theme}>
-      <diContext.Provider value={container}>
-        <CssBaseline />
-        <Main />
-      </diContext.Provider>
-    </ThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <diContext.Provider value={container}>
+          <CssBaseline />
+          <Main />
+        </diContext.Provider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   </Provider>
 );
 

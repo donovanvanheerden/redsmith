@@ -208,35 +208,35 @@ const ValueDetail = (props: Props): JSX.Element => {
       <Toolbar id="value-toolbar" className={classes.buttonToolbar}>
         <Tooltip title="Save">
           <span>
-            <IconButton onClick={handleSave} disabled={!hasKey || !canSave}>
+            <IconButton onClick={handleSave} disabled={!hasKey || !canSave} size="large">
               <SaveOutlinedIcon />
             </IconButton>
           </span>
         </Tooltip>
         <Tooltip title="Refresh">
           <span>
-            <IconButton onClick={handleRefresh} disabled={!hasKey}>
+            <IconButton onClick={handleRefresh} disabled={!hasKey} size="large">
               <CachedOutlinedIcon />
             </IconButton>
           </span>
         </Tooltip>
         <Tooltip title="Set Expiration">
           <span>
-            <IconButton onClick={handleExpire} disabled={!hasKey}>
+            <IconButton onClick={handleExpire} disabled={!hasKey} size="large">
               <ScheduleOutlinedIcon />
             </IconButton>
           </span>
         </Tooltip>
         <Tooltip title="Rename Key">
           <span>
-            <IconButton onClick={handleRename} disabled={!hasKey}>
+            <IconButton onClick={handleRename} disabled={!hasKey} size="large">
               <EditOutlinedIcon />
             </IconButton>
           </span>
         </Tooltip>
         <Tooltip title="Delete">
           <span>
-            <IconButton onClick={handleRemove} disabled={!hasKey}>
+            <IconButton onClick={handleRemove} disabled={!hasKey} size="large">
               <DeleteOutlineOutlinedIcon />
             </IconButton>
           </span>

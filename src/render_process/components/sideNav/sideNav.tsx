@@ -66,7 +66,7 @@ const SideNav = (): JSX.Element => {
     >
       <div className={classes.toolbar}>
         <Tooltip title="Create Connection" placement="right">
-          <IconButton onClick={handleCreateConnection}>
+          <IconButton onClick={handleCreateConnection} size="large">
             <AddIcon />
           </IconButton>
         </Tooltip>
