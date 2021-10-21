@@ -6,16 +6,17 @@ import {
   IconButton,
   MenuItem,
   Select,
+  SelectChangeEvent,
   Toolbar,
   Tooltip,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 
-import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
-import CachedOutlinedIcon from '@material-ui/icons/CachedOutlined';
-import ScheduleOutlinedIcon from '@material-ui/icons/ScheduleOutlined';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
+import CachedOutlinedIcon from '@mui/icons-material/CachedOutlined';
+import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { Header } from '../header';
 
 import * as monaco from 'monaco-editor';
@@ -143,9 +144,7 @@ const ValueDetail = (props: Props): JSX.Element => {
     };
   }, []);
 
-  const handleLanguageChange = (
-    event: React.ChangeEvent<{ value: string }>
-  ) => {
+  const handleLanguageChange = (event: SelectChangeEvent<string>) => {
     setLanguage(event.target.value);
   };
 

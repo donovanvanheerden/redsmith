@@ -1,16 +1,16 @@
 import React from 'react';
 import clsx from 'clsx';
 
-import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import IconButton from '@material-ui/core/IconButton';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import IconButton from '@mui/material/IconButton';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 
-import AddIcon from '@material-ui/icons/Add';
+import AddIcon from '@mui/icons-material/Add';
 
 import useStyles from './sideNav.styles';
-import { Tooltip } from '@material-ui/core';
+import { Tooltip } from '@mui/material';
 import { useIpc } from '../../hooks/useFromDi';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';

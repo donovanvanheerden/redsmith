@@ -1,20 +1,12 @@
-import { Grid } from "@material-ui/core";
-import React, { Fragment } from "react";
+import { Grid } from '@mui/material';
+import React from 'react';
 
-import { KeyList } from "../keyList";
-import { SideNav } from "../sideNav";
-import { ValueDetail } from "../valueDetail";
+import { KeyList } from '../keyList';
+import { SideNav } from '../sideNav';
+import { ValueDetail } from '../valueDetail';
 
-import useStyles from "./layout.styles";
-import { RootState } from "../../store";
-import { useDispatch, useSelector } from "react-redux";
-import { Form } from "../form";
-
-import { formActions } from '../../store/reducers/form-slice';
-
-interface FormState {
-  showConnForm: boolean;
-}
+import useStyles from './layout.styles';
+import { Form } from '../form';
 
 const Layout = (): JSX.Element => {
   const classes = useStyles();

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import useStyles from './header.styles';
 import clsx from 'clsx';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 interface Props {
   className?: string;

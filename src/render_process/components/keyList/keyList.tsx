@@ -1,7 +1,7 @@
 import * as React from 'react';
 import useStyles from './keyList.styles';
 import clsx from 'clsx';
-import { Grid, List, ListItem, ListItemText } from '@material-ui/core';
+import { Grid, List, ListItem, ListItemText } from '@mui/material';
 
 import { Header } from '../header';
 import { RootState } from '../../store';

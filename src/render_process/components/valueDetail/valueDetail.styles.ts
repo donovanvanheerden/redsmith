@@ -1,4 +1,5 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Theme } from '@mui/material';
+import { createStyles, makeStyles } from '@mui/styles';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const styles = makeStyles(({ breakpoints, spacing, palette }: Theme) =>

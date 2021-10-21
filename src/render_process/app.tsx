@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 
-import { createTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import Main from './pages/Main';
