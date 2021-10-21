@@ -1,8 +1,5 @@
 import * as React from 'react';
-import useStyles from './valueDetail.styles';
-import clsx from 'clsx';
 import {
-  Grid,
   IconButton,
   MenuItem,
   Select,
@@ -17,7 +14,6 @@ import CachedOutlinedIcon from '@mui/icons-material/CachedOutlined';
 import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import { Header } from '../header';
 
 import * as monaco from 'monaco-editor';
 import '../../disabledActions';
@@ -30,6 +26,12 @@ import { redisActions } from '../../store/reducers/redis-slice';
 import useConfirmModal from '../../hooks/useConfirmModal';
 import useRenameKeyModal from '../../hooks/useRenameKey';
 import useExpireKeyModal from '../../hooks/useExpireKey';
+
+import {
+  ButtonToolbar,
+  ValueContainer,
+  ValueHeader,
+} from './valueDetail.styles';
 
 interface Props {
   className?: string;
@@ -66,7 +68,6 @@ const ValueDetail = (props: Props): JSX.Element => {
   const [language, setLanguage] = React.useState('text');
 
   const monacoContainer = React.useRef<HTMLDivElement>();
-  const classes = useStyles();
 
   const ipc = useIpc();
   const dispatch = useDispatch();
@@ -197,18 +198,22 @@ const ValueDetail = (props: Props): JSX.Element => {
   };
 
   return (
-    <Grid
+    <ValueContainer
       id="value-container"
       style={{ height: '100vh' }}
       xs={6}
-      className={clsx(classes.root, props.className)}
+      className={props.className}
       item
     >
-      <Header title="Value Detail" className={classes.heading} />
-      <Toolbar id="value-toolbar" className={classes.buttonToolbar}>
+      <ValueHeader title="Value Detail" />
+      <ButtonToolbar id="value-toolbar">
         <Tooltip title="Save">
           <span>
-            <IconButton onClick={handleSave} disabled={!hasKey || !canSave} size="large">
+            <IconButton
+              onClick={handleSave}
+              disabled={!hasKey || !canSave}
+              size="large"
+            >
               <SaveOutlinedIcon />
             </IconButton>
           </span>
@@ -241,7 +246,7 @@ const ValueDetail = (props: Props): JSX.Element => {
             </IconButton>
           </span>
         </Tooltip>
-      </Toolbar>
+      </ButtonToolbar>
 
       {redisKey && (
         <React.Fragment>
@@ -261,7 +266,7 @@ const ValueDetail = (props: Props): JSX.Element => {
       <Confirm />
       <ExpireKey />
       <RenameKey />
-    </Grid>
+    </ValueContainer>
   );
 };
 

@@ -1,7 +1,5 @@
 import React from 'react';
-import clsx from 'clsx';
 
-import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
@@ -9,7 +7,7 @@ import ListItemText from '@mui/material/ListItemText';
 
 import AddIcon from '@mui/icons-material/Add';
 
-import useStyles from './sideNav.styles';
+import { StyledDrawer, Toolbar } from './sideNav.styles';
 import { Tooltip } from '@mui/material';
 import { useIpc } from '../../hooks/useFromDi';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,8 +22,6 @@ interface SelectorState {
 }
 
 const SideNav = (): JSX.Element => {
-  const classes = useStyles();
-
   const { dbs, selectedDb } = useSelector<RootState, SelectorState>(
     (state) => ({ dbs: state.redis.dbs, selectedDb: state.redis.selectedDb })
   );
@@ -51,20 +47,8 @@ const SideNav = (): JSX.Element => {
   };
 
   return (
-    <Drawer
-      variant="permanent"
-      className={clsx(classes.drawer, classes.drawerClose)}
-      classes={{
-        paper: clsx(classes.drawerClose),
-      }}
-      PaperProps={{
-        style: {
-          width: '100%',
-          position: 'relative',
-        },
-      }}
-    >
-      <div className={classes.toolbar}>
+    <StyledDrawer variant="permanent">
+      <Toolbar>
         <Tooltip title="Create Connection" placement="right">
           <IconButton onClick={handleCreateConnection} size="large">
             <AddIcon />
@@ -100,8 +84,8 @@ const SideNav = (): JSX.Element => {
             </ListItem>
           ))}
         </List>
-      </div>
-    </Drawer>
+      </Toolbar>
+    </StyledDrawer>
   );
 };
 

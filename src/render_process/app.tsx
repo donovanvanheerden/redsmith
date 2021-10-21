@@ -1,6 +1,11 @@
 import 'reflect-metadata';
 
-import { createTheme, CssBaseline, ThemeProvider, Theme, StyledEngineProvider } from '@mui/material';
+import {
+  createTheme,
+  CssBaseline,
+  ThemeProvider,
+  StyledEngineProvider,
+} from '@mui/material';
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -11,13 +16,6 @@ import WebIpc, { IWebIpc } from './infra/WebIpc';
 
 import { Provider } from 'react-redux';
 import { configureStore } from './store';
-
-
-declare module '@mui/styles/defaultTheme' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends Theme {}
-}
-
 
 const theme = createTheme();
 

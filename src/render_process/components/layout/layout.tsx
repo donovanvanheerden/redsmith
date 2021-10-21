@@ -5,24 +5,20 @@ import { KeyList } from '../keyList';
 import { SideNav } from '../sideNav';
 import { ValueDetail } from '../valueDetail';
 
-import useStyles from './layout.styles';
+import { Root } from './layout.styles';
 import { Form } from '../form';
 
-const Layout = (): JSX.Element => {
-  const classes = useStyles();
-
-  return (
-    <React.Fragment>
-      <Form />
-      <div className={classes.root}>
-        <SideNav />
-        <Grid className={classes.content} container>
-          <KeyList />
-          <ValueDetail />
-        </Grid>
-      </div>
-    </React.Fragment>
-  );
-};
+const Layout = (): JSX.Element => (
+  <React.Fragment>
+    <Form />
+    <Root>
+      <SideNav />
+      <Grid container>
+        <KeyList />
+        <ValueDetail />
+      </Grid>
+    </Root>
+  </React.Fragment>
+);
 
 export default Layout;
