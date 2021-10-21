@@ -11,6 +11,7 @@ export enum MessageType {
   SET_STRING_VALUE,
   REMOVE_KEY,
   RENAME_KEY,
+  SET_KEY_EXPIRY,
   ERROR,
 }
 
@@ -56,6 +57,11 @@ export interface RemoveKey extends Message {
 export interface RenameKey extends Message {
   key: string;
   newName: string;
+}
+
+export interface SetKeyExpiry extends Message {
+  key: string;
+  seconds: number;
 }
 export interface ErrorMessage extends Message {
   message: string;

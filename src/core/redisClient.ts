@@ -11,6 +11,7 @@ export interface IRedisClient {
   setString: (key: string, value: string) => Promise<void>;
   removeKeys: (...key: string[]) => Promise<boolean>;
   renameKey: (key: string, newName: string) => Promise<boolean>;
+  setKeyExpiry: (key: string, seconds: number) => Promise<boolean>;
 }
 
 const defaultDb = (index: number): DbInfo => ({
@@ -131,5 +132,11 @@ export class RedisClient implements IRedisClient {
     const response = await this.redis.rename(key, newName);
 
     return response !== 'OK';
+  }
+
+  async setKeyExpiry(key: string, seconds: number): Promise<boolean> {
+    const response = await this.redis.expire(key, seconds);
+
+    return response !== 0;
   }
 }
