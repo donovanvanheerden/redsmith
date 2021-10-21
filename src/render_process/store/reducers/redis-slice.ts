@@ -71,6 +71,31 @@ export const redisSlice = createSlice({
 
       return { ...state, dbs, keys };
     },
+    renameKey: (
+      state,
+      action: PayloadAction<{ oldName: string; newName: string }>
+    ) => {
+      const { oldName, newName } = action.payload;
+
+      const keyIdx = state.keys.findIndex((k) => k === oldName);
+
+      const modifiedKeys = [...state.keys];
+
+      modifiedKeys.splice(keyIdx, 1, newName);
+
+      if (state.selectedKey === oldName) {
+        return {
+          ...state,
+          selectedKey: newName,
+          keys: modifiedKeys,
+        };
+      }
+
+      return {
+        ...state,
+        keys: modifiedKeys,
+      };
+    },
   },
 });
 

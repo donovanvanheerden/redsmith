@@ -26,6 +26,7 @@ import { RootState } from '../../store';
 import { useIpc } from '../../hooks/useFromDi';
 import { redisActions } from '../../store/reducers/redis-slice';
 import useConfirmModal from '../../hooks/useConfirmModal';
+import useRenameKeyModal from '../../hooks/useRenameKey';
 
 interface Props {
   className?: string;
@@ -40,6 +41,7 @@ interface SelectorState {
 const ValueDetail = (props: Props): JSX.Element => {
   const changeTracker = React.useRef<monaco.IDisposable>();
   const { Confirm, handleShow } = useConfirmModal();
+  const { RenameKey, handleShow: handleShowRename } = useRenameKeyModal();
 
   const { value: redisValue, key: redisKey } = useSelector<
     RootState,
@@ -174,6 +176,16 @@ const ValueDetail = (props: Props): JSX.Element => {
     dispatch(redisActions.removeKey(redisKey));
   };
 
+  const handleRename = async () => {
+    const newName = await handleShowRename(redisKey);
+
+    if (!newName) return;
+
+    void ipc.renameKey(redisKey, newName);
+
+    dispatch(redisActions.renameKey({ oldName: redisKey, newName }));
+  };
+
   return (
     <Grid
       id="value-container"
@@ -207,7 +219,7 @@ const ValueDetail = (props: Props): JSX.Element => {
         </Tooltip>
         <Tooltip title="Rename Key">
           <span>
-            <IconButton disabled={!hasKey}>
+            <IconButton onClick={handleRename} disabled={!hasKey}>
               <EditOutlinedIcon />
             </IconButton>
           </span>
@@ -237,6 +249,7 @@ const ValueDetail = (props: Props): JSX.Element => {
         </React.Fragment>
       )}
       <Confirm />
+      <RenameKey />
     </Grid>
   );
 };
