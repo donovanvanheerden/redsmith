@@ -43,6 +43,12 @@ export interface IWebIpc {
    * @param newName new name for current key
    */
   renameKey: (key: string, newName: string) => Promise<void>;
+  /**
+   * Sets expiry for key in seconds
+   * @param key key to set expiry for
+   * @param seconds timeout in seconds for key to expire
+   */
+  setKeyExpiry: (key: string, seconds: number) => Promise<void>;
 }
 
 @injectable()
@@ -103,6 +109,16 @@ export default class WebIpc implements IWebIpc {
       type: Messages.MessageType.RENAME_KEY,
       key,
       newName,
+    };
+
+    await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
+  }
+
+  async setKeyExpiry(key: string, seconds: number): Promise<void> {
+    const msg: Messages.SetKeyExpiry = {
+      type: Messages.MessageType.SET_KEY_EXPIRY,
+      key,
+      seconds,
     };
 
     await ipc.sendAsync(Messages.CHANNEL_NAME, msg);

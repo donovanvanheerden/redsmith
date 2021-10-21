@@ -25,8 +25,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { useIpc } from '../../hooks/useFromDi';
 import { redisActions } from '../../store/reducers/redis-slice';
+
 import useConfirmModal from '../../hooks/useConfirmModal';
 import useRenameKeyModal from '../../hooks/useRenameKey';
+import useExpireKeyModal from '../../hooks/useExpireKey';
 
 interface Props {
   className?: string;
@@ -42,6 +44,7 @@ const ValueDetail = (props: Props): JSX.Element => {
   const changeTracker = React.useRef<monaco.IDisposable>();
   const { Confirm, handleShow } = useConfirmModal();
   const { RenameKey, handleShow: handleShowRename } = useRenameKeyModal();
+  const { ExpireKey, handleShow: handleShowExpire } = useExpireKeyModal();
 
   const { value: redisValue, key: redisKey } = useSelector<
     RootState,
@@ -186,6 +189,14 @@ const ValueDetail = (props: Props): JSX.Element => {
     dispatch(redisActions.renameKey({ oldName: redisKey, newName }));
   };
 
+  const handleExpire = async () => {
+    const newExpiry = await handleShowExpire();
+
+    if (!newExpiry && newExpiry !== 0) return;
+
+    void ipc.setKeyExpiry(redisKey, newExpiry);
+  };
+
   return (
     <Grid
       id="value-container"
@@ -212,7 +223,7 @@ const ValueDetail = (props: Props): JSX.Element => {
         </Tooltip>
         <Tooltip title="Set Expiration">
           <span>
-            <IconButton disabled={!hasKey}>
+            <IconButton onClick={handleExpire} disabled={!hasKey}>
               <ScheduleOutlinedIcon />
             </IconButton>
           </span>
@@ -249,6 +260,7 @@ const ValueDetail = (props: Props): JSX.Element => {
         </React.Fragment>
       )}
       <Confirm />
+      <ExpireKey />
       <RenameKey />
     </Grid>
   );
