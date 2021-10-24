@@ -13,6 +13,13 @@ interface Props {
   children?: React.ReactNode;
 }
 
+enum SearchOption {
+  Containing = 1,
+  StartingWith = 2,
+  EndingWith = 3,
+  MatchingPattern = 4
+}
+
 const KeySearch = ({ className }: Props): JSX.Element => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -34,6 +41,10 @@ const KeySearch = ({ className }: Props): JSX.Element => {
     dispatch(redisActions.filterKeys(filteredKeys));
   };
 
+  const handleFilterChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setAge(event.target.value as string);
+  };
+
   return (
       <form onSubmit={handleSearch}>
         <TextField
@@ -44,17 +55,17 @@ const KeySearch = ({ className }: Props): JSX.Element => {
           variant="filled"
         /> &nbsp;&nbsp;
       <FormControl>
-        <InputLabel id="demo-simple-select-label">Age</InputLabel>
+        <InputLabel id="filters-label">Search Filters</InputLabel>
         <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          // value={age}
-          // onChange={handleChange}
+          labelId="filters-label"
+          id="filters"
+          value={age}
+          onChange={handleFilterChange}
         >
-          <MenuItem value={10}>Containing</MenuItem>
-          <MenuItem value={20}>Starting With</MenuItem>
-          <MenuItem value={30}>Ending With</MenuItem>
-          <MenuItem value={40}>Matching Pattern</MenuItem>
+          <MenuItem value={SearchOption.Containing}>Containing</MenuItem>
+          <MenuItem value={SearchOption.StartingWith}>Starting With</MenuItem>
+          <MenuItem value={SearchOption.EndingWith}>Ending With</MenuItem>
+          <MenuItem value={SearchOption.MatchingPattern}>Matching Pattern</MenuItem>
         </Select>
       </FormControl>
       &nbsp;&nbsp;
