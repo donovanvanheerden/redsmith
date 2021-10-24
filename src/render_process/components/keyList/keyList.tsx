@@ -1,7 +1,7 @@
 import * as React from 'react';
-import useStyles from './keyList.styles';
-import clsx from 'clsx';
-import { Button, Grid, List, ListItem, ListItemText, TextField } from '@material-ui/core';
+import { ListItem, ListItemText } from '@mui/material';
+
+import { GridWrapper, List } from './keyList.styles';
 
 import { Header } from '../header';
 import { RootState } from '../../store';
@@ -16,7 +16,6 @@ interface Props {
 }
 
 const KeyList = ({ className }: Props): JSX.Element => {
-  const classes = useStyles();
   const keys = useSelector<RootState, string[]>((state) => state.redis.keys);
   console.log("keys:", keys);
 
@@ -51,27 +50,17 @@ const KeyList = ({ className }: Props): JSX.Element => {
   };
 
   return (
-    <Grid
-      id="key-container"
-      xs={6}
-      className={clsx(classes.root, className)}
-      item
-    >
+    <GridWrapper id="key-container" xs={6} className={className} item>
       <Header title="Keys" />
-
+      <List id="key-list" style={{ height, overflowY: 'scroll' }}>
       <KeySearch />
-      <List
-        id="key-list"
-        style={{ height, overflowY: 'scroll' }}
-        className={classes.keys}
-      >
         {keys.map((key) => (
           <ListItem button onClick={handleKeySelection(key)} key={key}>
             <ListItemText primary={key} />
           </ListItem>
         ))}
       </List>
-    </Grid>
+    </GridWrapper>
   );
 };
 

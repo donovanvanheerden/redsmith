@@ -47,6 +47,12 @@ export class MainIpc implements IMainIpc {
         case Messages.MessageType.REMOVE_KEY:
           await this._handleRemoveKey(<Messages.RemoveKey>message);
           break;
+        case Messages.MessageType.RENAME_KEY:
+          await this._handleRenameKey(<Messages.RenameKey>message);
+          break;
+        case Messages.MessageType.SET_KEY_EXPIRY:
+          await this._handleSetKeyExpiry(<Messages.SetKeyExpiry>message);
+          break;
         default:
           break;
       }
@@ -128,5 +134,15 @@ export class MainIpc implements IMainIpc {
 
   private async _handleRemoveKey(message: Messages.RemoveKey): Promise<void> {
     await this.redis.removeKeys(...message.keys);
+  }
+
+  private async _handleRenameKey(message: Messages.RenameKey): Promise<void> {
+    await this.redis.renameKey(message.key, message.newName);
+  }
+
+  private async _handleSetKeyExpiry(
+    message: Messages.SetKeyExpiry
+  ): Promise<void> {
+    await this.redis.setKeyExpiry(message.key, message.seconds);
   }
 }

@@ -1,22 +1,19 @@
 import * as React from 'react';
-import useStyles from './valueDetail.styles';
-import clsx from 'clsx';
 import {
-  Grid,
   IconButton,
   MenuItem,
   Select,
+  SelectChangeEvent,
   Toolbar,
   Tooltip,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 
-import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
-import CachedOutlinedIcon from '@material-ui/icons/CachedOutlined';
-import ScheduleOutlinedIcon from '@material-ui/icons/ScheduleOutlined';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
-import { Header } from '../header';
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
+import CachedOutlinedIcon from '@mui/icons-material/CachedOutlined';
+import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 import * as monaco from 'monaco-editor';
 import '../../disabledActions';
@@ -25,7 +22,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { useIpc } from '../../hooks/useFromDi';
 import { redisActions } from '../../store/reducers/redis-slice';
+
 import useConfirmModal from '../../hooks/useConfirmModal';
+import useRenameKeyModal from '../../hooks/useRenameKey';
+import useExpireKeyModal from '../../hooks/useExpireKey';
+
+import {
+  ButtonToolbar,
+  ValueContainer,
+  ValueHeader,
+} from './valueDetail.styles';
 
 interface Props {
   className?: string;
@@ -40,6 +46,8 @@ interface SelectorState {
 const ValueDetail = (props: Props): JSX.Element => {
   const changeTracker = React.useRef<monaco.IDisposable>();
   const { Confirm, handleShow } = useConfirmModal();
+  const { RenameKey, handleShow: handleShowRename } = useRenameKeyModal();
+  const { ExpireKey, handleShow: handleShowExpire } = useExpireKeyModal();
 
   const { value: redisValue, key: redisKey } = useSelector<
     RootState,
@@ -60,7 +68,6 @@ const ValueDetail = (props: Props): JSX.Element => {
   const [language, setLanguage] = React.useState('text');
 
   const monacoContainer = React.useRef<HTMLDivElement>();
-  const classes = useStyles();
 
   const ipc = useIpc();
   const dispatch = useDispatch();
@@ -138,9 +145,7 @@ const ValueDetail = (props: Props): JSX.Element => {
     };
   }, []);
 
-  const handleLanguageChange = (
-    event: React.ChangeEvent<{ value: string }>
-  ) => {
+  const handleLanguageChange = (event: SelectChangeEvent<string>) => {
     setLanguage(event.target.value);
   };
 
@@ -174,52 +179,74 @@ const ValueDetail = (props: Props): JSX.Element => {
     dispatch(redisActions.removeKey(redisKey));
   };
 
+  const handleRename = async () => {
+    const newName = await handleShowRename(redisKey);
+
+    if (!newName) return;
+
+    void ipc.renameKey(redisKey, newName);
+
+    dispatch(redisActions.renameKey({ oldName: redisKey, newName }));
+  };
+
+  const handleExpire = async () => {
+    const newExpiry = await handleShowExpire();
+
+    if (!newExpiry && newExpiry !== 0) return;
+
+    void ipc.setKeyExpiry(redisKey, newExpiry);
+  };
+
   return (
-    <Grid
+    <ValueContainer
       id="value-container"
       style={{ height: '100vh' }}
       xs={6}
-      className={clsx(classes.root, props.className)}
+      className={props.className}
       item
     >
-      <Header title="Value Detail" className={classes.heading} />
-      <Toolbar id="value-toolbar" className={classes.buttonToolbar}>
+      <ValueHeader title="Value Detail" />
+      <ButtonToolbar id="value-toolbar">
         <Tooltip title="Save">
           <span>
-            <IconButton onClick={handleSave} disabled={!hasKey || !canSave}>
+            <IconButton
+              onClick={handleSave}
+              disabled={!hasKey || !canSave}
+              size="large"
+            >
               <SaveOutlinedIcon />
             </IconButton>
           </span>
         </Tooltip>
         <Tooltip title="Refresh">
           <span>
-            <IconButton onClick={handleRefresh} disabled={!hasKey}>
+            <IconButton onClick={handleRefresh} disabled={!hasKey} size="large">
               <CachedOutlinedIcon />
             </IconButton>
           </span>
         </Tooltip>
         <Tooltip title="Set Expiration">
           <span>
-            <IconButton disabled={!hasKey}>
+            <IconButton onClick={handleExpire} disabled={!hasKey} size="large">
               <ScheduleOutlinedIcon />
             </IconButton>
           </span>
         </Tooltip>
         <Tooltip title="Rename Key">
           <span>
-            <IconButton disabled={!hasKey}>
+            <IconButton onClick={handleRename} disabled={!hasKey} size="large">
               <EditOutlinedIcon />
             </IconButton>
           </span>
         </Tooltip>
         <Tooltip title="Delete">
           <span>
-            <IconButton onClick={handleRemove} disabled={!hasKey}>
+            <IconButton onClick={handleRemove} disabled={!hasKey} size="large">
               <DeleteOutlineOutlinedIcon />
             </IconButton>
           </span>
         </Tooltip>
-      </Toolbar>
+      </ButtonToolbar>
 
       {redisKey && (
         <React.Fragment>
@@ -237,7 +264,9 @@ const ValueDetail = (props: Props): JSX.Element => {
         </React.Fragment>
       )}
       <Confirm />
-    </Grid>
+      <ExpireKey />
+      <RenameKey />
+    </ValueContainer>
   );
 };
 
