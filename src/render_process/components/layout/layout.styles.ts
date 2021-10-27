@@ -1,13 +1,5 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { styled } from '@mui/material/styles';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-    },
-    content: {
-      //width: `calc(100% - ${drawerWidth}px)`,
-    },
-  })
-);
+export const Root = styled('div')(() => ({
+  display: 'flex',
+}));

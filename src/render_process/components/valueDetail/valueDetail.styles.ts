@@ -1,23 +1,16 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Grid, Toolbar } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { Header } from '../header';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const styles = makeStyles(({ breakpoints, spacing, palette }: Theme) =>
-  createStyles({
-    root: {
-      minWidth: spacing(28),
-      height: '100vh',
-    },
-    heading: {
-      paddingBottom: spacing(),
-    },
-    buttonToolbar: {
-      minHeight: spacing(),
-    },
-    editor: {
-      height: '100%',
-      width: '100%',
-    },
-  })
-);
+export const ValueContainer = styled(Grid)(({ theme: { spacing } }) => ({
+  minWidth: spacing(28),
+  height: '100vh',
+}));
 
-export default styles;
+export const ValueHeader = styled(Header)(({ theme: { spacing } }) => ({
+  paddingBottom: spacing(),
+}));
+
+export const ButtonToolbar = styled(Toolbar)(({ theme: { spacing } }) => ({
+  minHeight: spacing(),
+}));

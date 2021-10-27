@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 
 import { Alert } from '../shared';
 
@@ -24,7 +24,7 @@ interface AlertMessage {
   hideDuration: number;
 }
 
-export default function Form(): JSX.Element {
+export default function ConnectionForm(): JSX.Element {
   const [alertMsg, setalertMsg] = React.useState<AlertMessage>(null);
   const [errorMsgDict, seterrorMsgDict] = useState<Record<string, string>>({});
 
@@ -117,6 +117,7 @@ export default function Form(): JSX.Element {
               label="Name"
               error={Boolean(errorMsgDict['ConnName'])}
               helperText={errorMsgDict['ConnName']}
+              defaultValue="localhots"
             />
             <br />
             <TextField
@@ -126,6 +127,7 @@ export default function Form(): JSX.Element {
               label="Host"
               error={Boolean(errorMsgDict['ConnAddress'])}
               helperText={errorMsgDict['ConnAddress']}
+              defaultValue="localhost"
             />
             <TextField
               id="Port"
@@ -138,6 +140,7 @@ export default function Form(): JSX.Element {
               }}
               error={Boolean(errorMsgDict['ConnPort'])}
               helperText={errorMsgDict['ConnPort']}
+              defaultValue="6379"
             />
             <br />
             <TextField
