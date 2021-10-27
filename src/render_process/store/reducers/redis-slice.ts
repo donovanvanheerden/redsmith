@@ -74,9 +74,9 @@ export const redisSlice = createSlice({
     filterKeys: (state, action: PayloadAction<string[]>) => {
       return {
         ...state,
-        keys: action.payload
-      }
-    }
+        keys: action.payload,
+      };
+    },
     renameKey: (
       state,
       action: PayloadAction<{ oldName: string; newName: string }>

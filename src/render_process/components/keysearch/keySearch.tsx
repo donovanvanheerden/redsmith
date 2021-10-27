@@ -1,28 +1,30 @@
-import * as React from "react";
-import useStyles from "./keySearch.styles";
-import clsx from "clsx";
-import { RootState } from "../../store";
+import * as React from 'react';
+import { RootState } from '../../store';
 
-import { useDispatch, useSelector } from "react-redux";
-import { redisActions } from "../../store/reducers/redis-slice";
+import { useDispatch, useSelector } from 'react-redux';
+import { redisActions } from '../../store/reducers/redis-slice';
 
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
-
-interface Props {
-  className?: string;
-  children?: React.ReactNode;
-}
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+} from '@mui/material';
 
 enum SearchOption {
   Containing = 1,
   StartingWith = 2,
   EndingWith = 3,
-  MatchingPattern = 4
+  MatchingPattern = 4,
 }
 
-const KeySearch = ({ className }: Props): JSX.Element => {
-  const classes = useStyles();
+const KeySearch = (): JSX.Element => {
   const dispatch = useDispatch();
+
+  const [filter, setFilter] = React.useState(SearchOption.Containing);
 
   const keys = useSelector<RootState, string[]>((state) => state.redis.keys);
 
@@ -30,49 +32,48 @@ const KeySearch = ({ className }: Props): JSX.Element => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
-    const searchKey = formData.get("searchKey").toString();
-    console.log("searchKey:", searchKey);
+    const searchKey = formData.get('searchKey').toString();
 
-    var filteredKeys = [...keys].filter((key) =>
+    const filteredKeys = [...keys].filter((key) =>
       key.toLowerCase().includes(searchKey.toLowerCase())
     );
-    console.log("filtered keys:", filteredKeys);
 
     dispatch(redisActions.filterKeys(filteredKeys));
   };
 
-  const handleFilterChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setAge(event.target.value as string);
+  const handleFilterChange = (event: SelectChangeEvent<SearchOption>) => {
+    setFilter(event.target.value as SearchOption);
   };
 
   return (
-      <form onSubmit={handleSearch}>
-        <TextField
-          id="filled-search"
-          name="searchKey"
-          label="Search field"
-          type="search"
-          variant="filled"
-        /> &nbsp;&nbsp;
+    <form onSubmit={handleSearch}>
+      <TextField
+        id="filled-search"
+        name="searchKey"
+        label="Search field"
+        type="search"
+        variant="filled"
+      />
       <FormControl>
         <InputLabel id="filters-label">Search Filters</InputLabel>
         <Select
           labelId="filters-label"
           id="filters"
-          value={age}
+          value={filter}
           onChange={handleFilterChange}
         >
-          <MenuItem value={SearchOption.Containing}>Containing</MenuItem>
+          <MenuItem value={`${SearchOption.Containing}`}>Containing</MenuItem>
           <MenuItem value={SearchOption.StartingWith}>Starting With</MenuItem>
           <MenuItem value={SearchOption.EndingWith}>Ending With</MenuItem>
-          <MenuItem value={SearchOption.MatchingPattern}>Matching Pattern</MenuItem>
+          <MenuItem value={SearchOption.MatchingPattern}>
+            Matching Pattern
+          </MenuItem>
         </Select>
       </FormControl>
-      &nbsp;&nbsp;
-        <Button variant="contained" color="primary" type="submit">
-          Search
-        </Button>
-      </form>
+      <Button variant="contained" color="primary" type="submit">
+        Search
+      </Button>
+    </form>
   );
 };
 
