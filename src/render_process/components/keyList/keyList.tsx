@@ -7,6 +7,7 @@ import { Header } from '../header';
 import { RootState } from '../../store';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIpc } from '../../hooks/useFromDi';
+import { KeySearch } from '../keysearch';
 import { redisActions } from '../../store/reducers/redis-slice';
 
 interface Props {
@@ -16,6 +17,7 @@ interface Props {
 
 const KeyList = ({ className }: Props): JSX.Element => {
   const keys = useSelector<RootState, string[]>((state) => state.redis.keys);
+  console.log("keys:", keys);
 
   const dispatch = useDispatch();
 
@@ -51,6 +53,7 @@ const KeyList = ({ className }: Props): JSX.Element => {
     <GridWrapper id="key-container" xs={6} className={className} item>
       <Header title="Keys" />
       <List id="key-list" style={{ height, overflowY: 'scroll' }}>
+      <KeySearch />
         {keys.map((key) => (
           <ListItem button onClick={handleKeySelection(key)} key={key}>
             <ListItemText primary={key} />

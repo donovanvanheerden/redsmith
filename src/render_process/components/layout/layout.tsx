@@ -7,10 +7,11 @@ import { ValueDetail } from '../valueDetail';
 
 import { Root } from './layout.styles';
 import { Form } from '../form';
+import { ConnectionForm } from "../connectionform";
 
 const Layout = (): JSX.Element => (
   <React.Fragment>
-    <Form />
+      <ConnectionForm />
     <Root>
       <SideNav />
       <Grid container>
