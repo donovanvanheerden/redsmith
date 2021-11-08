@@ -1,11 +1,12 @@
 import { injectable } from 'inversify';
-import { DbInfo } from '../../core/interfaces';
+import { Connection, DbInfo } from '../../core/interfaces';
 import * as Messages from '../../core/WindowMessages';
 import { ConnectionOptions } from '../globals/interfaces';
 
 const ipc = window.ipc;
 
 export interface IWebIpc {
+  getConnections: () => Promise<Connection[]>;
   /**
    * Creates a connection to redis using provided connection options.
    *
@@ -122,5 +123,18 @@ export default class WebIpc implements IWebIpc {
     };
 
     await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
+  }
+
+  async getConnections(): Promise<Connection[]> {
+    const msg: Messages.Message = {
+      type: Messages.MessageType.GET_CONNECTIONS,
+    };
+
+    const response = await ipc.sendAsync<Messages.GetConnections>(
+      Messages.CHANNEL_NAME,
+      msg
+    );
+
+    return response.connections;
   }
 }

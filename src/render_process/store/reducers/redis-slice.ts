@@ -7,6 +7,7 @@ interface RedisState {
   keys: string[];
   selectedKey?: string;
   value?: string;
+  name?: string;
 }
 
 const initialState: RedisState = {
@@ -15,6 +16,7 @@ const initialState: RedisState = {
   keys: [],
   selectedKey: null,
   value: null,
+  name: null,
 };
 
 interface SwitchDb {
