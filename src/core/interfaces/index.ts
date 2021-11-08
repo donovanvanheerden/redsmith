@@ -20,3 +20,10 @@ export interface DbInfo {
    */
   avgTtl: number;
 }
+
+export interface Connection {
+  name: string;
+  host: string;
+  port: number;
+  password: string;
+}

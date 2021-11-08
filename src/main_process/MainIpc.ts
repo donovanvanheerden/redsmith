@@ -1,5 +1,7 @@
 import { ipcMain as ipc } from 'electron';
+import { Connection } from '../core/interfaces';
 import { IRedisClient, RedisClient } from '../core/redisClient';
+import Store from '../core/store';
 
 import * as Messages from '../core/WindowMessages';
 
@@ -28,6 +30,9 @@ export class MainIpc implements IMainIpc {
 
     try {
       switch (message.type) {
+        case Messages.MessageType.GET_CONNECTIONS:
+          reply = await this._handleGetConnections();
+          break;
         case Messages.MessageType.CREATE_CONNECTION:
           reply = await this._handleCreateConnection(
             <Messages.CreateConnection>message
@@ -70,6 +75,17 @@ export class MainIpc implements IMainIpc {
     }
   }
 
+  private async _handleGetConnections(): Promise<Messages.GetConnections> {
+    const connections = Store.get('connections');
+
+    const msg: Messages.GetConnections = {
+      type: Messages.MessageType.GET_CONNECTIONS,
+      connections: Object.keys(connections).map((key) => connections[key]),
+    };
+
+    return msg;
+  }
+
   private async _handleCreateConnection(
     message: Messages.CreateConnection
   ): Promise<Messages.Message> {
@@ -82,8 +98,23 @@ export class MainIpc implements IMainIpc {
     try {
       const response = await this.redis.connect();
 
+      const connection: Connection = {
+        host: message.host,
+        port: message.port,
+        password: message.password,
+        name: message.name,
+      };
+
+      const connections = Store.get('connections');
+
+      Store.set('connections', {
+        ...connections,
+        [connection.name]: connection,
+      });
+
       const reply: Messages.Connected = {
         type: Messages.MessageType.CONNECTED,
+        name: connection.name,
         ...response,
       };
 

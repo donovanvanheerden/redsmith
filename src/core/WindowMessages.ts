@@ -1,8 +1,9 @@
-import { DbInfo } from './interfaces';
+import { Connection, DbInfo } from './interfaces';
 
 export const CHANNEL_NAME = 'async-message';
 
 export enum MessageType {
+  GET_CONNECTIONS,
   CREATE_CONNECTION,
   CONNECTED,
   SWITCH_DB,
@@ -19,6 +20,10 @@ export interface Message {
   type: MessageType;
 }
 
+export interface GetConnections extends Message {
+  connections: Connection[];
+}
+
 export interface CreateConnection extends Message {
   name: string;
   host: string;
@@ -30,6 +35,7 @@ export interface Connected extends Message {
   dbs: DbInfo[];
   keys: string[];
   selectedDb: number;
+  name: string;
 }
 
 export interface SwitchDb extends Message {

@@ -42,6 +42,7 @@ interface ConnectedResponse {
   dbs: DbInfo[];
   keys: string[];
   selectedDb: number;
+  name?: string;
 }
 
 export class RedisClient implements IRedisClient {
