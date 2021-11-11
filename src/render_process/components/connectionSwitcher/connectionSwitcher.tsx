@@ -1,4 +1,4 @@
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton } from '@mui/material';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Connection } from '../../../core/interfaces';
@@ -8,9 +8,14 @@ import { connectionActions } from '../../store/reducers/connection-slice';
 import { formActions } from '../../store/reducers/form-slice';
 import { redisActions } from '../../store/reducers/redis-slice';
 
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
+
 import AddIcon from '@mui/icons-material/Add';
 
-import { ConnectionBlock, Root } from './connectionSwitcher.styles';
+import { Root } from './connectionSwitcher.styles';
+
+import ConnectionBlock from './connectionBlock/connectionBlock';
 
 interface SelectorState {
   connections: Record<string, Connection>;
@@ -18,6 +23,11 @@ interface SelectorState {
 }
 
 const ConnectionSwitcher = () => {
+  const [contextMenu, setContextMenu] = React.useState<{
+    mouseX: number;
+    mouseY: number;
+  } | null>(null);
+
   // this could just be in local state instead of redux... but anyway
   const { connections, connectionName } = useSelector<RootState, SelectorState>(
     (state) => ({
@@ -62,39 +72,57 @@ const ConnectionSwitcher = () => {
     dispatch(redisActions.setOnConnected(response));
   };
 
+  const handleContextMenu = (event: React.MouseEvent) => {
+    event.preventDefault();
+
+    setContextMenu(
+      contextMenu === null
+        ? {
+            mouseX: event.clientX - 2,
+            mouseY: event.clientY - 4,
+          }
+        : // repeated contextmenu when it is already open closes it with Chrome 84 on Ubuntu
+          // Other native context menus might behave different.
+          // With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
+          null
+    );
+  };
+
+  const handleClose = () => {
+    setContextMenu(null);
+  };
+
   return (
     <Root>
-      <Tooltip title="Create Connection" placement="right">
-        <ConnectionBlock>
-          <IconButton
-            color="inherit"
-            onClick={handleNewConnection}
-            size="large"
-          >
-            <AddIcon />
-          </IconButton>
-        </ConnectionBlock>
-      </Tooltip>
-      {Object.keys(connections).map((name) => {
-        let label = name
-          .split(' ')
-          .map((n) => n[0])
-          .join('')
-          .toUpperCase();
-
-        if (label.length === 1) label = name.substr(0, 3).toUpperCase();
-
-        return (
-          <Tooltip key={name} title={name} placement="right">
-            <ConnectionBlock
-              active={name === connectionName}
-              onClick={handleSwitchConnection(name)}
-            >
-              {label}
-            </ConnectionBlock>
-          </Tooltip>
-        );
-      })}
+      <ConnectionBlock title="Create Connection">
+        <IconButton color="inherit" onClick={handleNewConnection} size="large">
+          <AddIcon />
+        </IconButton>
+      </ConnectionBlock>
+      {Object.keys(connections).map((name) => (
+        <ConnectionBlock
+          key={name}
+          title={name}
+          active={name === connectionName}
+          onClick={handleSwitchConnection(name)}
+          onRightClick={handleContextMenu}
+        />
+      ))}
+      <Menu
+        open={contextMenu !== null}
+        onClose={handleClose}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          contextMenu !== null
+            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            : undefined
+        }
+      >
+        <MenuItem onClick={handleClose}>Connect</MenuItem>
+        <MenuItem onClick={handleClose}>Disconnect</MenuItem>
+        <MenuItem onClick={handleClose}>Edit</MenuItem>
+        <MenuItem onClick={handleClose}>Delete</MenuItem>
+      </Menu>
     </Root>
   );
 };
