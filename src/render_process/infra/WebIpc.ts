@@ -8,6 +8,11 @@ const ipc = window.ipc;
 export interface IWebIpc {
   getConnections: () => Promise<Connection[]>;
   /**
+   * Deletes a saved connection using the connection name provided
+   * @param name Connection Name
+   */
+  deleteConnection: (name: string) => Promise<void>;
+  /**
    * Creates a connection to redis using provided connection options.
    *
    * @param options Connection Options for redis
@@ -136,5 +141,14 @@ export default class WebIpc implements IWebIpc {
     );
 
     return response.connections;
+  }
+
+  async deleteConnection(name: string): Promise<void> {
+    const msg: Messages.DeleteConnection = {
+      type: Messages.MessageType.DELETE_CONNECTION,
+      name,
+    };
+
+    return await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
   }
 }

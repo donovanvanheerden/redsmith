@@ -38,6 +38,11 @@ export class MainIpc implements IMainIpc {
             <Messages.CreateConnection>message
           );
           break;
+        case Messages.MessageType.DELETE_CONNECTION:
+          await this._handleDeleteConnection(
+            <Messages.DeleteConnection>message
+          );
+          break;
         case Messages.MessageType.SWITCH_DB:
           reply = await this._handleSwitchDb(<Messages.SwitchDb>message);
           break;
@@ -175,5 +180,17 @@ export class MainIpc implements IMainIpc {
     message: Messages.SetKeyExpiry
   ): Promise<void> {
     await this.redis.setKeyExpiry(message.key, message.seconds);
+  }
+
+  private async _handleDeleteConnection(
+    message: Messages.DeleteConnection
+  ): Promise<void> {
+    const connections = Store.get('connections');
+
+    delete connections[message.name];
+
+    Store.set('connections', connections);
+
+    return Promise.resolve();
   }
 }

@@ -5,6 +5,7 @@ export const CHANNEL_NAME = 'async-message';
 export enum MessageType {
   GET_CONNECTIONS,
   CREATE_CONNECTION,
+  DELETE_CONNECTION,
   CONNECTED,
   SWITCH_DB,
   DB_SWITCHED,
@@ -29,6 +30,10 @@ export interface CreateConnection extends Message {
   host: string;
   port: number;
   password?: string;
+}
+
+export interface DeleteConnection extends Message {
+  name: string;
 }
 
 export interface Connected extends Message {
