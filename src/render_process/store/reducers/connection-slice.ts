@@ -10,13 +10,21 @@ export const connectionSlice = createSlice({
   initialState: initialState,
   reducers: {
     setConnections: (_, action: PayloadAction<Connection[]>) => {
-      console.log('payload: ', action.payload);
-
       const state = (action.payload || []).reduce((prev, current) => {
         return { ...prev, [current.name]: current };
       }, {});
 
       return state;
+    },
+    addConnection: (state, action: PayloadAction<Connection>) => {
+      return { ...state, [action.payload.name]: action.payload };
+    },
+    deleteConnection: (state, action: PayloadAction<Connection>) => {
+      const connections = { ...state };
+
+      delete connections[action.payload.name];
+
+      return connections;
     },
   },
 });
