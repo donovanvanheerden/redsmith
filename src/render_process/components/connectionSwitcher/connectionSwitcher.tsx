@@ -26,6 +26,7 @@ const ConnectionSwitcher = () => {
   const [contextMenu, setContextMenu] = React.useState<{
     mouseX: number;
     mouseY: number;
+    connection?: Connection;
   } | null>(null);
 
   // this could just be in local state instead of redux... but anyway
@@ -72,19 +73,47 @@ const ConnectionSwitcher = () => {
     dispatch(redisActions.setOnConnected(response));
   };
 
-  const handleContextMenu = (event: React.MouseEvent) => {
-    event.preventDefault();
+  const handleContextMenu =
+    (connection: Connection) => (event: React.MouseEvent) => {
+      event.preventDefault();
 
-    setContextMenu(
-      contextMenu === null
-        ? {
-            mouseX: event.clientX - 2,
-            mouseY: event.clientY - 4,
-          }
-        : // repeated contextmenu when it is already open closes it with Chrome 84 on Ubuntu
-          // Other native context menus might behave different.
-          // With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
-          null
+      setContextMenu(
+        contextMenu === null
+          ? {
+              mouseX: event.clientX - 2,
+              mouseY: event.clientY - 4,
+              connection,
+            }
+          : // repeated contextmenu when it is already open closes it with Chrome 84 on Ubuntu
+            // Other native context menus might behave different.
+            // With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
+            null
+      );
+    };
+
+  const handleDelete = async () => {
+    try {
+      void ipc.deleteConnection(contextMenu.connection.name);
+
+      dispatch(connectionActions.deleteConnection(contextMenu.connection));
+
+      setContextMenu(null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDisconnect = () => {
+    console.log(
+      'I need to implement disconnecting from: ',
+      contextMenu.connection.name
+    );
+  };
+
+  const handleEditConnection = () => {
+    console.log(
+      'I need to implement editing connection: ',
+      contextMenu.connection.name
     );
   };
 
@@ -105,7 +134,7 @@ const ConnectionSwitcher = () => {
           title={name}
           active={name === connectionName}
           onClick={handleSwitchConnection(name)}
-          onRightClick={handleContextMenu}
+          onRightClick={handleContextMenu(connections[name])}
         />
       ))}
       <Menu
@@ -118,10 +147,9 @@ const ConnectionSwitcher = () => {
             : undefined
         }
       >
-        <MenuItem onClick={handleClose}>Connect</MenuItem>
-        <MenuItem onClick={handleClose}>Disconnect</MenuItem>
-        <MenuItem onClick={handleClose}>Edit</MenuItem>
-        <MenuItem onClick={handleClose}>Delete</MenuItem>
+        <MenuItem onClick={handleDisconnect}>Disconnect</MenuItem>
+        <MenuItem onClick={handleEditConnection}>Edit</MenuItem>
+        <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </Menu>
     </Root>
   );
