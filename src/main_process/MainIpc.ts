@@ -1,5 +1,7 @@
 import { ipcMain as ipc } from 'electron';
+import { Connection } from '../core/interfaces';
 import { IRedisClient, RedisClient } from '../core/redisClient';
+import Store from '../core/store';
 
 import * as Messages from '../core/WindowMessages';
 
@@ -28,9 +30,17 @@ export class MainIpc implements IMainIpc {
 
     try {
       switch (message.type) {
+        case Messages.MessageType.GET_CONNECTIONS:
+          reply = await this._handleGetConnections();
+          break;
         case Messages.MessageType.CREATE_CONNECTION:
           reply = await this._handleCreateConnection(
             <Messages.CreateConnection>message
+          );
+          break;
+        case Messages.MessageType.DELETE_CONNECTION:
+          await this._handleDeleteConnection(
+            <Messages.DeleteConnection>message
           );
           break;
         case Messages.MessageType.SWITCH_DB:
@@ -70,10 +80,22 @@ export class MainIpc implements IMainIpc {
     }
   }
 
+  private async _handleGetConnections(): Promise<Messages.GetConnections> {
+    const connections = Store.get('connections');
+
+    const msg: Messages.GetConnections = {
+      type: Messages.MessageType.GET_CONNECTIONS,
+      connections: Object.keys(connections).map((key) => connections[key]),
+    };
+
+    return msg;
+  }
+
   private async _handleCreateConnection(
     message: Messages.CreateConnection
   ): Promise<Messages.Message> {
     this.redis = new RedisClient({
+      name: message.name,
       host: message.host,
       port: message.port,
       password: message.password,
@@ -82,8 +104,23 @@ export class MainIpc implements IMainIpc {
     try {
       const response = await this.redis.connect();
 
+      const connection: Connection = {
+        host: message.host,
+        port: message.port,
+        password: message.password,
+        name: message.name,
+      };
+
+      const connections = Store.get('connections');
+
+      Store.set('connections', {
+        ...connections,
+        [connection.name]: connection,
+      });
+
       const reply: Messages.Connected = {
         type: Messages.MessageType.CONNECTED,
+        name: connection.name,
         ...response,
       };
 
@@ -144,5 +181,21 @@ export class MainIpc implements IMainIpc {
     message: Messages.SetKeyExpiry
   ): Promise<void> {
     await this.redis.setKeyExpiry(message.key, message.seconds);
+  }
+
+  private async _handleDeleteConnection(
+    message: Messages.DeleteConnection
+  ): Promise<void> {
+    const connections = Store.get('connections');
+
+    delete connections[message.name];
+
+    Store.set('connections', connections);
+
+    const redisConnection = this.redis.getConnectionName();
+
+    if (message.name === redisConnection) await this.redis.disconnect();
+
+    return Promise.resolve();
   }
 }

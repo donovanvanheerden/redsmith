@@ -1,11 +1,17 @@
 import { injectable } from 'inversify';
-import { DbInfo } from '../../core/interfaces';
+import { Connection, DbInfo } from '../../core/interfaces';
 import * as Messages from '../../core/WindowMessages';
 import { ConnectionOptions } from '../globals/interfaces';
 
 const ipc = window.ipc;
 
 export interface IWebIpc {
+  getConnections: () => Promise<Connection[]>;
+  /**
+   * Deletes a saved connection using the connection name provided
+   * @param name Connection Name
+   */
+  deleteConnection: (name: string) => Promise<void>;
   /**
    * Creates a connection to redis using provided connection options.
    *
@@ -122,5 +128,27 @@ export default class WebIpc implements IWebIpc {
     };
 
     await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
+  }
+
+  async getConnections(): Promise<Connection[]> {
+    const msg: Messages.Message = {
+      type: Messages.MessageType.GET_CONNECTIONS,
+    };
+
+    const response = await ipc.sendAsync<Messages.GetConnections>(
+      Messages.CHANNEL_NAME,
+      msg
+    );
+
+    return response.connections;
+  }
+
+  async deleteConnection(name: string): Promise<void> {
+    const msg: Messages.DeleteConnection = {
+      type: Messages.MessageType.DELETE_CONNECTION,
+      name,
+    };
+
+    return await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
   }
 }

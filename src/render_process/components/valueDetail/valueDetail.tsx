@@ -2,7 +2,6 @@ import * as React from 'react';
 import {
   IconButton,
   MenuItem,
-  Select,
   SelectChangeEvent,
   Toolbar,
   Tooltip,
@@ -29,6 +28,7 @@ import useExpireKeyModal from '../../hooks/useExpireKey';
 
 import {
   ButtonToolbar,
+  LanguageSelector,
   ValueContainer,
   ValueHeader,
 } from './valueDetail.styles';
@@ -130,7 +130,7 @@ const ValueDetail = (props: Props): JSX.Element => {
     const height =
       document.querySelector('#value-container').clientHeight -
       (document.querySelector('#value-toolbar') as HTMLElement).offsetTop -
-      100;
+      120;
 
     setSize({ width, height });
   }, []);
@@ -254,11 +254,14 @@ const ValueDetail = (props: Props): JSX.Element => {
           <div style={{ display: 'flex', zIndex: 999 }}>
             <Toolbar id="language-change">
               <Typography>Language: </Typography>
-              <Select value={language} onChange={handleLanguageChange}>
+              <LanguageSelector
+                value={language}
+                onChange={handleLanguageChange}
+              >
                 <MenuItem value="text">Text</MenuItem>
                 <MenuItem value="json">JSON</MenuItem>
                 <MenuItem value="xml">XML</MenuItem>
-              </Select>
+              </LanguageSelector>
             </Toolbar>
           </div>
         </React.Fragment>

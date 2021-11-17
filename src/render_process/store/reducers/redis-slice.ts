@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { DbInfo } from '../../../core/interfaces';
+import { DbInfo, Connection } from '../../../core/interfaces';
+import { connectionActions } from './connection-slice';
 
 interface RedisState {
   dbs: DbInfo[];
@@ -7,6 +8,7 @@ interface RedisState {
   keys: string[];
   selectedKey?: string;
   value?: string;
+  name?: string;
 }
 
 const initialState: RedisState = {
@@ -15,6 +17,7 @@ const initialState: RedisState = {
   keys: [],
   selectedKey: null,
   value: null,
+  name: null,
 };
 
 interface SwitchDb {
@@ -102,6 +105,18 @@ export const redisSlice = createSlice({
         keys: modifiedKeys,
       };
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(
+      connectionActions.deleteConnection.type,
+      (state, action: PayloadAction<Connection>) => {
+        if (state.name === action.payload.name) {
+          return initialState;
+        }
+
+        return state;
+      }
+    );
   },
 });
 
