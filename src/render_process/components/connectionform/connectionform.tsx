@@ -13,6 +13,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useIpc } from '../../hooks/useFromDi';
 import { formActions } from '../../store/reducers/form-slice';
 import { redisActions } from '../../store/reducers/redis-slice';
+import { connectionActions } from '../../store/reducers/connection-slice';
+import { Connection } from '../../../core/interfaces';
 
 interface FormState {
   showConnForm: boolean;
@@ -54,13 +56,16 @@ export default function ConnectionForm(): JSX.Element {
     }
 
     try {
-      const response = await ipc.connect({
+      const connection: Connection = {
         host: formData.get('ConnAddress').toString(),
         name: formData.get('ConnName').toString(),
         port: parseInt(formData.get('ConnPort').toString()),
         password: formData.get('ConnPassword').toString(),
-      });
+      };
 
+      const response = await ipc.connect(connection);
+
+      dispatch(connectionActions.addConnection(connection));
       dispatch(redisActions.setOnConnected(response));
     } catch (ex) {
       console.log(ex);
