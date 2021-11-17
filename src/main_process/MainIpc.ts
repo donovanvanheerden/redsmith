@@ -95,6 +95,7 @@ export class MainIpc implements IMainIpc {
     message: Messages.CreateConnection
   ): Promise<Messages.Message> {
     this.redis = new RedisClient({
+      name: message.name,
       host: message.host,
       port: message.port,
       password: message.password,
@@ -190,6 +191,10 @@ export class MainIpc implements IMainIpc {
     delete connections[message.name];
 
     Store.set('connections', connections);
+
+    const redisConnection = this.redis.getConnectionName();
+
+    if (message.name === redisConnection) await this.redis.disconnect();
 
     return Promise.resolve();
   }
