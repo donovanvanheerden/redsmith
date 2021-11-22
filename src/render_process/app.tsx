@@ -1,21 +1,16 @@
 import 'reflect-metadata';
 
-import {
-  createTheme,
-  CssBaseline,
-  ThemeProvider,
-  StyledEngineProvider,
-} from '@mui/material';
+import { createTheme, CssBaseline, ThemeProvider, StyledEngineProvider } from '@mui/material';
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import Main from './pages/Main';
 import { diContext } from './infra/diContext';
 import { Container } from 'inversify';
 import WebIpc, { IWebIpc } from './infra/WebIpc';
 
 import { Provider } from 'react-redux';
-import { configureStore } from './store';
+import { createStore } from './store';
+import { Layout } from './components/layout';
 
 const theme = createTheme();
 
@@ -23,7 +18,7 @@ const container = new Container();
 
 container.bind<IWebIpc>(WebIpc).to(WebIpc).inSingletonScope();
 
-const store = configureStore();
+const store = createStore();
 
 const App = () => (
   <Provider store={store}>
@@ -31,15 +26,15 @@ const App = () => (
       <ThemeProvider theme={theme}>
         <diContext.Provider value={container}>
           <CssBaseline />
-          <Main />
+          <Layout />
         </diContext.Provider>
       </ThemeProvider>
     </StyledEngineProvider>
   </Provider>
 );
 
-function render() {
-  ReactDOM.render(<App />, document.getElementById('app'));
-}
+ReactDOM.render(<App />, document.getElementById('app'));
 
-render();
+if (module.hot) {
+  module.hot.accept();
+}
