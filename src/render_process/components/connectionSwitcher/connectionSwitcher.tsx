@@ -1,9 +1,7 @@
 import { IconButton } from '@mui/material';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Connection } from '../../../core/interfaces';
 import { useIpc } from '../../hooks/useFromDi';
-import { RootState } from '../../store';
 import { connectionActions } from '../../store/reducers/connection-slice';
 import { formActions } from '../../store/reducers/form-slice';
 import { redisActions } from '../../store/reducers/redis-slice';
@@ -16,6 +14,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { Root } from './connectionSwitcher.styles';
 
 import ConnectionBlock from './connectionBlock/connectionBlock';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 
 interface SelectorState {
   connections: Record<string, Connection>;
@@ -30,16 +29,14 @@ const ConnectionSwitcher = () => {
   } | null>(null);
 
   // this could just be in local state instead of redux... but anyway
-  const { connections, connectionName } = useSelector<RootState, SelectorState>(
-    (state) => ({
-      connections: state.connection,
-      connectionName: state.redis.name,
-    })
-  );
+  const { connections, connectionName } = useAppSelector<SelectorState>((state) => ({
+    connections: state.connection,
+    connectionName: state.redis.name,
+  }));
 
   const ipc = useIpc();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const fetchConnections = React.useCallback(async () => {
     const connections = await ipc.getConnections();
@@ -63,33 +60,29 @@ const ConnectionSwitcher = () => {
   };
 
   const handleSwitchConnection = (name: string) => async () => {
-    console.log(
-      'this should change connection or create connection to: ',
-      name
-    );
+    console.log('this should change connection or create connection to: ', name);
 
     const response = await ipc.connect(connections[name]);
 
     dispatch(redisActions.setOnConnected(response));
   };
 
-  const handleContextMenu =
-    (connection: Connection) => (event: React.MouseEvent) => {
-      event.preventDefault();
+  const handleContextMenu = (connection: Connection) => (event: React.MouseEvent) => {
+    event.preventDefault();
 
-      setContextMenu(
-        contextMenu === null
-          ? {
-              mouseX: event.clientX - 2,
-              mouseY: event.clientY - 4,
-              connection,
-            }
-          : // repeated contextmenu when it is already open closes it with Chrome 84 on Ubuntu
-            // Other native context menus might behave different.
-            // With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
-            null
-      );
-    };
+    setContextMenu(
+      contextMenu === null
+        ? {
+            mouseX: event.clientX - 2,
+            mouseY: event.clientY - 4,
+            connection,
+          }
+        : // repeated contextmenu when it is already open closes it with Chrome 84 on Ubuntu
+          // Other native context menus might behave different.
+          // With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
+          null,
+    );
+  };
 
   const handleDelete = async () => {
     try {
@@ -104,17 +97,11 @@ const ConnectionSwitcher = () => {
   };
 
   const handleDisconnect = () => {
-    console.log(
-      'I need to implement disconnecting from: ',
-      contextMenu.connection.name
-    );
+    console.log('I need to implement disconnecting from: ', contextMenu.connection.name);
   };
 
   const handleEditConnection = () => {
-    console.log(
-      'I need to implement editing connection: ',
-      contextMenu.connection.name
-    );
+    console.log('I need to implement editing connection: ', contextMenu.connection.name);
   };
 
   const handleClose = () => {
@@ -141,11 +128,7 @@ const ConnectionSwitcher = () => {
         open={contextMenu !== null}
         onClose={handleClose}
         anchorReference="anchorPosition"
-        anchorPosition={
-          contextMenu !== null
-            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
-            : undefined
-        }
+        anchorPosition={contextMenu !== null ? { top: contextMenu.mouseY, left: contextMenu.mouseX } : undefined}
       >
         <MenuItem onClick={handleDisconnect}>Disconnect</MenuItem>
         <MenuItem onClick={handleEditConnection}>Edit</MenuItem>

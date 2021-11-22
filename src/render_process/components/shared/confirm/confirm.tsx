@@ -1,10 +1,4 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import React from 'react';
 
 interface Props {
@@ -16,12 +10,7 @@ interface Props {
   onConfirm: () => void;
 }
 
-const Confirm = ({
-  title,
-  message,
-  onConfirm,
-  ...modalProps
-}: Props): JSX.Element => (
+const Confirm = ({ title, message, onConfirm, ...modalProps }: Props): JSX.Element => (
   <Dialog {...modalProps}>
     <DialogTitle>{title}</DialogTitle>
     <DialogContent>{message}</DialogContent>

@@ -7,8 +7,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { StyledDrawer } from './sideNav.styles';
 
 import { useIpc } from '../../hooks/useFromDi';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { DbInfo } from '../../../core/interfaces';
 import { redisActions } from '../../store/reducers/redis-slice';
 
@@ -18,10 +17,11 @@ interface SelectorState {
 }
 
 const SideNav = (): JSX.Element => {
-  const { dbs, selectedDb } = useSelector<RootState, SelectorState>(
-    (state) => ({ dbs: state.redis.dbs, selectedDb: state.redis.selectedDb })
-  );
-  const dispatch = useDispatch();
+  const { dbs, selectedDb } = useAppSelector<SelectorState>((state) => ({
+    dbs: state.redis.dbs,
+    selectedDb: state.redis.selectedDb,
+  }));
+  const dispatch = useAppDispatch();
 
   const ipc = useIpc();
 

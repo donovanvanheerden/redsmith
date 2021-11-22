@@ -1,11 +1,4 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import React from 'react';
 
 interface Props {
@@ -17,12 +10,7 @@ interface Props {
   onConfirm: (newName: string) => void;
 }
 
-const RenameKey = ({
-  title,
-  oldName,
-  onConfirm,
-  ...modalProps
-}: Props): JSX.Element => {
+const RenameKey = ({ title, oldName, onConfirm, ...modalProps }: Props): JSX.Element => {
   const [newName, setName] = React.useState(oldName);
 
   const handleChange = (event: React.ChangeEvent<{ value: string }>) => {

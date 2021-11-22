@@ -22,10 +22,7 @@ export default function Alert(props: Props): JSX.Element {
     setOpen(props.open);
   }, []);
 
-  const handleClose = (
-    event: React.SyntheticEvent | React.MouseEvent,
-    reason?: string
-  ) => {
+  const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -50,12 +47,7 @@ export default function Alert(props: Props): JSX.Element {
             {/* <Button color="secondary" size="small" onClick={handleClose}>
               UNDO
             </Button> */}
-            <IconButton
-              size="small"
-              aria-label="close"
-              color="inherit"
-              onClick={handleClose}
-            >
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
               <CloseIcon fontSize="small" />
             </IconButton>
           </React.Fragment>
