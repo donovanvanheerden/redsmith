@@ -1,10 +1,10 @@
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material';
 
-export const Root = styled('div')(({ theme: { spacing } }) => ({
+export const Root = styled('div')(({ theme: { palette, spacing } }) => ({
+  backgroundColor: palette.grey[800],
   height: '100vh',
   width: spacing(10),
   padding: spacing(),
-  backgroundColor: '#333',
   display: 'flex',
   flexDirection: 'column',
 }));

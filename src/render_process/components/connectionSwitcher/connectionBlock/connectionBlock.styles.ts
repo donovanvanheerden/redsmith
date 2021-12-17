@@ -1,32 +1,49 @@
-import { styled } from '@mui/material/styles';
+import { alpha, buttonBaseClasses, iconButtonClasses, Palette, styled, typographyClasses } from '@mui/material';
+import redConnectionButtonClasses from './connectionBlockClasses';
 
 interface Props {
   active?: boolean;
+  color?: keyof Pick<Palette, 'primary' | 'secondary'>;
 }
 
 export const Root = styled('div', {
-  shouldForwardProp: (prop) => prop !== 'active',
-})<Props>(({ active, theme: { spacing, palette } }) => ({
-  height: spacing(7),
-  width: spacing(7),
-  backgroundColor: '#444',
-  borderRadius: spacing(),
-  color: '#f2f2f2',
+  name: 'RedConnectionButton',
+  slot: 'Root',
+  overridesResolver: (props, styles) => [
+    styles.root,
+    props.color === 'primary' && styles.primary,
+    props.color === 'secondary' && styles.secondary,
+  ],
+  shouldForwardProp: (prop) => prop !== 'color' && prop !== 'active' && prop !== 'sx',
+})<Props>(({ theme: { palette, spacing }, color }) => ({
+  backgroundColor: alpha(palette.grey[700], 0.4),
+  borderRadius: '50%',
+  color: palette[color].main,
+  height: spacing(6),
+  width: spacing(6),
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  transition: '* 200ms ease-in-out',
   cursor: 'pointer',
-  ...(active && {
-    border: `2px solid ${palette.primary.light}`,
-    backgroundColor: palette.primary.dark,
-    color: palette.primary.contrastText,
-    fontWeight: 'bold',
-  }),
+  border: `2px solid transparent`,
+  transition: 'all 200ms ease-in-out',
+  [`& .${typographyClasses.root}`]: {
+    color: palette[color].contrastText,
+    fontWeight: 600,
+  },
   '&:not(:first-child)': {
     marginTop: spacing(),
   },
   '&:hover': {
-    backgroundColor: active ? palette.primary.light : '#555',
+    backgroundColor: alpha(palette.grey[700], 0.6),
+  },
+  [`&:hover button.${buttonBaseClasses.root}.${iconButtonClasses.root}`]: {
+    backgroundColor: 'transparent',
+  },
+  [`&.${redConnectionButtonClasses.active}`]: {
+    border: `2px solid ${palette[color].main}`,
+    '&:hover': {
+      border: `2px solid ${palette[color].light}`,
+    },
   },
 }));
