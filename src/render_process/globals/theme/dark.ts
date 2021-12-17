@@ -51,9 +51,9 @@ export const darkTheme = createTheme({
   components: {
     ...theme.components,
     RedConnectionButton: {
-      defaultProps: {
-        color: 'secondary',
-      },
+      //   defaultProps: {
+      //     color: 'secondary',
+      //   },
       // styleOverrides: {
       //   root: {
       //     color: dark.palette.secondary.main,

@@ -11,6 +11,7 @@ interface Props {
   active?: boolean;
   title: string;
   className?: string;
+  color?: 'primary' | 'secondary';
   tooltipPlacement?:
     | 'bottom-end'
     | 'bottom-start'
@@ -25,6 +26,9 @@ interface Props {
     | 'top-start'
     | 'top';
   children?: React.ReactNode;
+  classes?: {
+    root?: string;
+  };
   onClick?: () => void;
   onRightClick?: (event: React.MouseEvent) => void;
 }
@@ -39,37 +43,40 @@ const useUtilityClasses = ({ active, classes }: { active: boolean; classes: Part
   return composedClasses;
 };
 
-const ConnectionBlock = ({
-  active = false,
-  className,
-  children,
-  title,
-  tooltipPlacement = 'right',
-  onClick,
-  onRightClick,
-}: Props) => {
+const ConnectionBlock = (compProps: Props) => {
+  const props = useThemeProps({ props: compProps, name: 'RedConnectionButton' });
+
+  const {
+    active = false,
+    color = 'primary',
+    className,
+    children,
+    title,
+    tooltipPlacement = 'right',
+    onClick,
+    onRightClick,
+  } = props;
+
+  const ownerState = {
+    active: props.active,
+    classes: props.classes,
+  };
+
   let label = title
     .split(' ')
     .map((n) => n[0])
     .join('')
     .toUpperCase();
 
-  if (label.length === 1) label = title.substr(0, 3).toUpperCase();
-
-  const ownerState = {
-    active,
-    classes: {},
-  };
-
-  const props = useThemeProps({ props: { active, color: undefined }, name: 'RedConnectionButton' });
+  if (label.length === 1) label = title.substring(0, 3).toUpperCase();
 
   const classes = useUtilityClasses(ownerState);
 
   return (
     <Tooltip title={title} placement={tooltipPlacement}>
       <Root
-        active={props.active}
-        color={props.color}
+        active={active}
+        color={color}
         className={clsx(classes.root, className)}
         onClick={onClick}
         onContextMenu={onRightClick}
