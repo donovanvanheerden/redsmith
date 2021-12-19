@@ -11,9 +11,9 @@ import Menu from '@mui/material/Menu';
 
 import AddIcon from '@mui/icons-material/Add';
 
-import { Root } from './connectionSwitcher.styles';
+import { Root } from './connectionBar.styles';
 
-import ConnectionBlock from './connectionBlock/connectionBlock';
+import ConnectionButton from '../connectionButton/connectionButton';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 
 interface SelectorState {
@@ -21,7 +21,7 @@ interface SelectorState {
   connectionName: string;
 }
 
-const ConnectionSwitcher = () => {
+const ConnectionBar = () => {
   const [contextMenu, setContextMenu] = React.useState<{
     mouseX: number;
     mouseY: number;
@@ -110,13 +110,13 @@ const ConnectionSwitcher = () => {
 
   return (
     <Root>
-      <ConnectionBlock title="Create Connection">
+      <ConnectionButton title="Create Connection">
         <IconButton color="inherit" onClick={handleNewConnection} size="large">
           <AddIcon />
         </IconButton>
-      </ConnectionBlock>
+      </ConnectionButton>
       {Object.keys(connections).map((name) => (
-        <ConnectionBlock
+        <ConnectionButton
           key={name}
           title={name}
           active={name === connectionName}
@@ -138,4 +138,4 @@ const ConnectionSwitcher = () => {
   );
 };
 
-export default ConnectionSwitcher;
+export default ConnectionBar;
