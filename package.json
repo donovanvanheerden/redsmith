@@ -58,7 +58,12 @@
                     "js": "./src/preload.ts"
                   }
                 }
-              ]
+              ],
+              "resolve": {
+                "alias": {
+                  "src": "./src"
+                }
+              }
             }
           }
         ]
