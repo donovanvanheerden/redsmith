@@ -29,6 +29,13 @@ declare module '@mui/material' {
         secondary?: CSSInterpolation;
       };
     };
+    RedDbSelector: {
+      styleOverrides?: {
+        root?: CSSInterpolation;
+        title?: CSSInterpolation;
+        list?: CSSInterpolation;
+      };
+    };
   }
 }
 
@@ -63,6 +70,20 @@ export const darkTheme = createTheme({
       //         borderColor: dark.palette.secondary.light,
       //       },
       //     },
+      //   },
+      // },
+    },
+    RedDbSelector: {
+      // styleOverrides: {
+      //   root: {
+      //     backgroundColor: 'purple',
+      //   },
+      //   title: {
+      //     color: 'cyan',
+      //     textAlign: 'right',
+      //   },
+      //   list: {
+      //     border: '1px solid lightblue',
       //   },
       // },
     },
