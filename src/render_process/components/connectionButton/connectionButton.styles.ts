@@ -1,5 +1,5 @@
 import { alpha, buttonBaseClasses, iconButtonClasses, Palette, styled, typographyClasses } from '@mui/material';
-import redConnectionButtonClasses from './connectionBlockClasses';
+import redConnectionButtonClasses from './connectionButtonClasses';
 
 interface Props {
   active?: boolean;
@@ -31,7 +31,7 @@ export const Root = styled('div', {
     color: palette[color].contrastText,
     fontWeight: 600,
   },
-  '&:not(:first-child)': {
+  '&:not(:first-of-type)': {
     marginTop: spacing(),
   },
   '&:hover': {

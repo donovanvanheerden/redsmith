@@ -1,15 +1,24 @@
-import composeClasses from '@mui/base/composeClasses';
-import { Tooltip, TooltipProps, Typography } from '@mui/material';
+import { Tooltip, TooltipProps, Typography, unstable_composeClasses as composeClasses } from '@mui/material';
 import { useThemeProps } from '@mui/system';
 import clsx from 'clsx';
 import React from 'react';
 
-import { generateButtonText } from '../../../utils/string';
+import { generateButtonText } from '../../utils/string';
 
-import { Root } from './connectionBlock.styles';
-import { getRedConnectionButtonUtilityClass, RedConnectionButtonClasses } from './connectionBlockClasses';
+import { Root } from './connectionButton.styles';
+import { getRedConnectionButtonUtilityClass, RedConnectionButtonClasses } from './connectionButtonClasses';
 
 type PropType<TObject, TProperty extends keyof TObject> = TObject[TProperty];
+
+const useUtilityClasses = ({ active, classes }: { active: boolean; classes: Partial<RedConnectionButtonClasses> }) => {
+  const slots = {
+    root: ['root', active && 'active'],
+  };
+
+  const composedClasses = composeClasses(slots, getRedConnectionButtonUtilityClass, classes);
+
+  return composedClasses;
+};
 
 interface Props {
   active?: boolean;
@@ -25,17 +34,7 @@ interface Props {
   onRightClick?: (event: React.MouseEvent) => void;
 }
 
-const useUtilityClasses = ({ active, classes }: { active: boolean; classes: Partial<RedConnectionButtonClasses> }) => {
-  const slots = {
-    root: ['root', active && 'active'],
-  };
-
-  const composedClasses = composeClasses(slots, getRedConnectionButtonUtilityClass, classes);
-
-  return composedClasses;
-};
-
-const ConnectionBlock = (compProps: Props) => {
+const ConnectionButton = (compProps: Props) => {
   const props = useThemeProps({ props: compProps, name: 'RedConnectionButton' });
 
   const {
@@ -49,12 +48,12 @@ const ConnectionBlock = (compProps: Props) => {
     onRightClick,
   } = props;
 
+  const label = generateButtonText(title);
+
   const ownerState = {
     active: props.active,
     classes: props.classes,
   };
-
-  const label = generateButtonText(title);
 
   const classes = useUtilityClasses(ownerState);
 
@@ -73,4 +72,4 @@ const ConnectionBlock = (compProps: Props) => {
   );
 };
 
-export default ConnectionBlock;
+export default ConnectionButton;
