@@ -1,6 +1,6 @@
 {
-  "name": "redily-clone",
-  "productName": "redily-clone",
+  "name": "redsmith",
+  "productName": "redsmith",
   "version": "1.0.0",
   "description": "Redis GUI Client, clone of Redily",
   "main": ".webpack/main",
