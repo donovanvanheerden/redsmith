@@ -11,7 +11,7 @@ export const SearchField = styled(InputBase, {
   slot: 'Root',
 })(({ theme: { palette, spacing } }) => ({
   color: palette.common.white,
-  backgroundColor: alpha(palette.grey[700], 0.8),
+  backgroundColor: alpha(palette.grey[800], 0.8),
   borderRadius: spacing(2, 0, 0, 2),
   padding: spacing(0.5, 0.5, 0.5, 1.5),
   minWidth: spacing(40),

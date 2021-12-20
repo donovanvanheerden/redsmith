@@ -14,7 +14,7 @@ export const Root = styled(ListItemButton, {
   backgroundColor: 'unset',
   padding: 0,
   [`&.${redDbItemClasses.selected}`]: {
-    backgroundColor: palette.grey[800],
+    backgroundColor: palette.grey[700],
   },
   [`&:hover.${redDbItemClasses.selected}`]: {
     backgroundColor: alpha(palette.grey[800], 0.8),
@@ -31,7 +31,7 @@ export const Root = styled(ListItemButton, {
   },
   [`&.${redDbItemClasses.selected} .${listItemTextClasses.primary}, &.${redDbItemClasses.selected} .${listItemTextClasses.secondary}`]:
     {
-      color: palette[color].main,
+      color: palette[color].contrastText,
       fontWeight: 600,
     },
 }));

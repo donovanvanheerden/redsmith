@@ -1,5 +1,4 @@
-import { Drawer, List, paperClasses, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { alpha, styled, Drawer, List, paperClasses, Typography } from '@mui/material';
 
 const drawerWidth = 240;
 
@@ -11,7 +10,7 @@ export const StyledDrawer = styled(Drawer, {
   width: drawerWidth,
   flexShrink: 0,
   whiteSpace: 'nowrap',
-  backgroundColor: palette.grey[600],
+  backgroundColor: palette.grey[800],
   [`& .${paperClasses.root}`]: {
     width: '100%',
     position: 'relative',
@@ -27,10 +26,10 @@ export const Title = styled(Typography, {
 })(({ theme: { palette, spacing, typography } }) => ({
   ...typography.button,
   fontWeight: 500,
-  color: palette.getContrastText(palette.grey[600]),
+  color: alpha(palette.getContrastText(palette.grey[800]), 0.8),
   textAlign: 'center',
   marginTop: spacing(3),
-  marginBottom: spacing(3),
+  marginBottom: spacing(12),
 }));
 
 export const DbList = styled(List, {

@@ -28,7 +28,7 @@ export const Root = styled('div', {
   border: `2px solid transparent`,
   transition: 'all 200ms ease-in-out',
   [`& .${typographyClasses.root}`]: {
-    color: palette[color].contrastText,
+    color: alpha(palette[color].contrastText, 0.6),
     fontWeight: 600,
   },
   '&:not(:first-of-type)': {
@@ -42,6 +42,9 @@ export const Root = styled('div', {
   },
   [`&.${redConnectionButtonClasses.active}`]: {
     border: `2px solid ${palette[color].main}`,
+    [`& .${typographyClasses.root}`]: {
+      color: alpha(palette[color].contrastText, 1),
+    },
     '&:hover': {
       border: `2px solid ${palette[color].light}`,
     },
