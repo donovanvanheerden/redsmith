@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material';
 import React from 'react';
 
-import { KeyList } from '../keyList';
+import { KeysPanel } from '../keysPanel';
 
 import { ValueDetail } from '../valueDetail';
 
@@ -18,7 +18,7 @@ const Layout = (): JSX.Element => (
       <ConnectionBar />
       <DbSelector />
       <Grid container>
-        <KeyList />
+        <KeysPanel />
         <ValueDetail />
       </Grid>
     </Root>
