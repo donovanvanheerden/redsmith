@@ -36,6 +36,16 @@ declare module '@mui/material' {
         list?: CSSInterpolation;
       };
     };
+    RedDbItem: {
+      defaultProps?: {
+        color?: 'primary' | 'secondary';
+      };
+      styleOverrides?: {
+        root?: CSSInterpolation;
+        primary?: CSSInterpolation;
+        secondary?: CSSInterpolation;
+      };
+    };
   }
 }
 
@@ -84,6 +94,18 @@ export const darkTheme = createTheme({
       //   },
       //   list: {
       //     border: '1px solid lightblue',
+      //   },
+      // },
+    },
+    RedDbItem: {
+      // defaultProps: {
+      //   color: 'secondary',
+      // },
+      // styleOverrides: {
+      //   primary: {
+      //     '&.Mui-selected .MuiListItemText-primary': {
+      //       color: 'cyan',
+      //     },
       //   },
       // },
     },
