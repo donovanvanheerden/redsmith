@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { ListItem, ListItemText } from '@mui/material';
 
 import { GridWrapper, List } from './keyList.styles';
 
 import { Header } from '../header';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useIpc } from '../../hooks/useFromDi';
-import { KeySearch } from '../keysearch';
+import { KeysSearch } from '../keysSearch';
 import { redisActions } from '../../store/reducers/redis-slice';
+import { KeyItem } from '../keyItem';
 
 interface Props {
   className?: string;
@@ -19,7 +19,7 @@ interface SelectorState {
   hasConnection: boolean;
 }
 
-const KeyList = ({ className }: Props): JSX.Element => {
+const KeysPanel = ({ className }: Props): JSX.Element => {
   const { keys, hasConnection } = useAppSelector<SelectorState>((state) => ({
     keys: state.redis.keys,
     hasConnection: Boolean(state.redis.name),
@@ -55,19 +55,19 @@ const KeyList = ({ className }: Props): JSX.Element => {
     dispatch(redisActions.setRedisKeySelection({ key, value }));
   };
 
+  const xs = hasConnection ? 6 : 12;
+
   return (
-    <GridWrapper id="key-container" xs={hasConnection ? 6 : 12} className={className} item>
+    <GridWrapper id="key-container" xs={xs} className={className} item>
       <Header title="Keys" />
+      <KeysSearch />
       <List id="key-list" style={{ height, overflowY: 'scroll' }}>
-        <KeySearch />
         {keys.map((key) => (
-          <ListItem button onClick={handleKeySelection(key)} key={key}>
-            <ListItemText primary={key} />
-          </ListItem>
+          <KeyItem key={key} keyName={key} onClick={handleKeySelection(key)} />
         ))}
       </List>
     </GridWrapper>
   );
 };
 
-export default KeyList;
+export default KeysPanel;
