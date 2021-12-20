@@ -16,6 +16,7 @@ export const StyledDrawer = styled(Drawer, {
     width: '100%',
     position: 'relative',
     backgroundColor: 'inherit',
+    border: 'none',
   },
 }));
 

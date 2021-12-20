@@ -6,7 +6,7 @@ import { useIpc } from '../../hooks/useFromDi';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { DbInfo } from '../../../core/interfaces';
 import { redisActions } from '../../store/reducers/redis-slice';
-import { unstable_composeClasses as composeClasses, useThemeProps } from '@mui/material';
+import { unstable_composeClasses as composeClasses } from '@mui/material';
 import { getRedDbSelectorUtilityClass, RedDbSelectorClasses } from './dbSelectorClasses';
 
 import { DbItem } from '../dbItem';
@@ -31,9 +31,7 @@ interface SelectorState {
   selectedDb: number;
 }
 
-const DbSelector = (compProps: Props): JSX.Element => {
-  const props = useThemeProps({ props: compProps, name: 'RedDbSelector' });
-
+const DbSelector = (props: Props): JSX.Element => {
   const dispatch = useAppDispatch();
   const ipc = useIpc();
 
