@@ -1,14 +1,6 @@
-import {
-  alpha,
-  //   buttonBaseClasses,
-  createTheme,
-  CSSInterpolation,
-  //   iconButtonClasses,
-  //   typographyClasses,
-} from '@mui/material';
+import { alpha, createTheme, CSSInterpolation } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import { CSSProperties } from '@mui/styled-engine';
-// import redConnectionButtonClasses from '../../components/connectionSwitcher/connectionBlock/connectionBlockClasses';
 import { theme } from './base';
 
 // main #c0392b
@@ -67,47 +59,5 @@ export const darkTheme = createTheme({
   },
   components: {
     ...theme.components,
-    RedConnectionButton: {
-      //   defaultProps: {
-      //     color: 'secondary',
-      //   },
-      // styleOverrides: {
-      //   root: {
-      //     color: dark.palette.secondary.main,
-      //     '&.Mui-active': {
-      //       borderColor: dark.palette.secondary.main,
-      //       '&:hover': {
-      //         borderColor: dark.palette.secondary.light,
-      //       },
-      //     },
-      //   },
-      // },
-    },
-    RedDbSelector: {
-      // styleOverrides: {
-      //   root: {
-      //     backgroundColor: 'purple',
-      //   },
-      //   title: {
-      //     color: 'cyan',
-      //     textAlign: 'right',
-      //   },
-      //   list: {
-      //     border: '1px solid lightblue',
-      //   },
-      // },
-    },
-    RedDbItem: {
-      // defaultProps: {
-      //   color: 'secondary',
-      // },
-      // styleOverrides: {
-      //   primary: {
-      //     '&.Mui-selected .MuiListItemText-primary': {
-      //       color: 'cyan',
-      //     },
-      //   },
-      // },
-    },
   },
 });
