@@ -18,7 +18,8 @@ import useConfirmModal from '../../hooks/useConfirmModal';
 import useRenameKeyModal from '../../hooks/useRenameKey';
 import useExpireKeyModal from '../../hooks/useExpireKey';
 
-import { ButtonToolbar, LanguageSelector, ValueContainer, ValueHeader } from './valueDetail.styles';
+import { Header } from '../header';
+import { ButtonToolbar, LanguageSelector, ValueContainer } from './valueDetail.styles';
 
 interface Props {
   className?: string;
@@ -189,7 +190,7 @@ const ValueDetail = (props: Props): JSX.Element => {
 
   return (
     <ValueContainer id="value-container" style={{ height: '100vh' }} xs={6} className={props.className} item>
-      <ValueHeader title="Value Detail" />
+      <Header title="Editor" />
       <ButtonToolbar id="value-toolbar">
         <Tooltip title="Save">
           <span>
