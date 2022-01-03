@@ -63,8 +63,8 @@ const KeysPanel = ({ className }: Props): JSX.Element => {
     <GridWrapper id="key-container" xs={xs} className={className} item>
       <Header title="Keys" />
       <KeysSearch />
-      <List id="key-list" style={{ height, overflowY: 'scroll' }}>
-        {keys.map((key) => (
+      <List id="key-list" style={{ height }}>
+        {keys.slice(0, 20).map((key) => (
           <KeyItem key={key} keyName={key} selected={key === selectedKey} onClick={handleKeySelection(key)} />
         ))}
       </List>
