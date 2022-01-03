@@ -1,26 +1,11 @@
-import { alpha, Color, createTheme, CSSInterpolation } from '@mui/material';
+import { alpha, createTheme, CSSInterpolation } from '@mui/material';
 import { CSSProperties } from '@mui/styled-engine';
 import { theme } from './base';
 
+import { CoolGrey } from './colours';
+
 // main #c0392b
 // secondary #2980b9
-
-const coolGrey: Color = {
-  '50': '#F5F7FA',
-  '100': '#E4E7EB',
-  '200': '#CBD2D9',
-  '300': '#9AA5B1',
-  '400': '#7B8794',
-  '500': '#616E7C',
-  '600': '#52606D',
-  '700': '#3E4C59',
-  '800': '#323F4B',
-  '900': '#1F2933',
-  A100: '#E4E7EB',
-  A200: '#CBD2D9',
-  A400: '#7B8794',
-  A700: '#3E4C59',
-};
 
 declare module '@mui/material' {
   interface Components {
@@ -64,7 +49,7 @@ export const darkTheme = createTheme({
   palette: {
     ...theme.palette,
     background: {
-      default: alpha(coolGrey[700], 1),
+      default: alpha(CoolGrey[700], 1),
     },
     primary: {
       main: '#A54F4A', //'#c0392b',
@@ -72,7 +57,7 @@ export const darkTheme = createTheme({
     secondary: {
       main: '#2980b9',
     },
-    grey: coolGrey,
+    grey: CoolGrey,
   },
   components: {
     ...theme.components,

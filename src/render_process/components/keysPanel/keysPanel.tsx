@@ -17,12 +17,14 @@ interface Props {
 interface SelectorState {
   keys: string[];
   hasConnection: boolean;
+  selectedKey?: string;
 }
 
 const KeysPanel = ({ className }: Props): JSX.Element => {
-  const { keys, hasConnection } = useAppSelector<SelectorState>((state) => ({
+  const { keys, hasConnection, selectedKey } = useAppSelector<SelectorState>((state) => ({
     keys: state.redis.keys,
     hasConnection: Boolean(state.redis.name),
+    selectedKey: state.redis.selectedKey,
   }));
 
   const dispatch = useAppDispatch();
@@ -63,7 +65,7 @@ const KeysPanel = ({ className }: Props): JSX.Element => {
       <KeysSearch />
       <List id="key-list" style={{ height, overflowY: 'scroll' }}>
         {keys.map((key) => (
-          <KeyItem key={key} keyName={key} onClick={handleKeySelection(key)} />
+          <KeyItem key={key} keyName={key} selected={key === selectedKey} onClick={handleKeySelection(key)} />
         ))}
       </List>
     </GridWrapper>
