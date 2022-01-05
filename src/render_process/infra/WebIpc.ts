@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { Connection, DbInfo } from '../../core/interfaces';
+import { Connection, DbInfo, Settings } from '../../core/interfaces';
 import * as Messages from '../../core/WindowMessages';
 import { ConnectionOptions } from '../globals/interfaces';
 
@@ -55,6 +55,15 @@ export interface IWebIpc {
    * @param seconds timeout in seconds for key to expire
    */
   setKeyExpiry: (key: string, seconds: number) => Promise<void>;
+  /**
+   * Gets settings saved in store
+   */
+  getSettings: () => Promise<Settings>;
+  /**
+   * Saves settings
+   * @param settings Settings Object from redux store
+   */
+  saveSettings: (settings: Settings) => Promise<void>;
 }
 
 @injectable()
@@ -74,10 +83,7 @@ export default class WebIpc implements IWebIpc {
       db,
     };
 
-    const response = await ipc.sendAsync<Messages.DbSwitched>(
-      Messages.CHANNEL_NAME,
-      msg
-    );
+    const response = await ipc.sendAsync<Messages.DbSwitched>(Messages.CHANNEL_NAME, msg);
 
     return response.keys;
   }
@@ -135,10 +141,7 @@ export default class WebIpc implements IWebIpc {
       type: Messages.MessageType.GET_CONNECTIONS,
     };
 
-    const response = await ipc.sendAsync<Messages.GetConnections>(
-      Messages.CHANNEL_NAME,
-      msg
-    );
+    const response = await ipc.sendAsync<Messages.GetConnections>(Messages.CHANNEL_NAME, msg);
 
     return response.connections;
   }
@@ -147,6 +150,25 @@ export default class WebIpc implements IWebIpc {
     const msg: Messages.DeleteConnection = {
       type: Messages.MessageType.DELETE_CONNECTION,
       name,
+    };
+
+    return await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
+  }
+
+  async getSettings(): Promise<Settings> {
+    const msg: Messages.GetSettings = {
+      type: Messages.MessageType.GET_SETTINGS,
+    } as Messages.GetSettings;
+
+    const response: Messages.GetSettings = await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
+
+    return response.settings;
+  }
+
+  async saveSettings(settings: Settings): Promise<void> {
+    const msg: Messages.SaveSettings = {
+      type: Messages.MessageType.SAVE_SETTINGS,
+      settings,
     };
 
     return await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
