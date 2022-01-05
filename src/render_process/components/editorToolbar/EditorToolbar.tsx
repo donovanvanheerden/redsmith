@@ -69,7 +69,7 @@ const EditorToolbar = ({
           </IconButton>
         </span>
       </Tooltip>
-      <LanguageSelector value={language} onChange={onLanguageChange}>
+      <LanguageSelector value={language} disabled={disabled} onChange={onLanguageChange}>
         <MenuItem value="text">Text</MenuItem>
         <MenuItem value="json">JSON</MenuItem>
         <MenuItem value="xml">XML</MenuItem>
