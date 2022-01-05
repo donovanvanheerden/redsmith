@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SelectChangeEvent } from '@mui/material';
+import { SelectChangeEvent, useTheme } from '@mui/material';
 
 import * as monaco from 'monaco-editor';
 import '../../disabledActions';
@@ -32,6 +32,9 @@ const defaultLanguage = 'text';
 
 const ValueDetail = (props: Props): JSX.Element => {
   const changeTracker = React.useRef<monaco.IDisposable>();
+
+  const theme = useTheme();
+
   const { Confirm, handleShow } = useConfirmModal();
   const { RenameKey, handleShow: handleShowRename } = useRenameKeyModal();
   const { ExpireKey, handleShow: handleShowExpire } = useExpireKeyModal();
@@ -86,6 +89,7 @@ const ValueDetail = (props: Props): JSX.Element => {
         minimap: {
           enabled: false,
         },
+        theme: theme.palette.mode === 'dark' ? 'vs-dark' : 'vs',
       });
     } else {
       setLanguage(defaultLanguage);
@@ -126,7 +130,7 @@ const ValueDetail = (props: Props): JSX.Element => {
   }, [autoFormat, redisValue]);
 
   const calculateBounds = React.useCallback(() => {
-    const width = document.querySelector('#value-container')?.clientWidth ?? 0;
+    const width = document.querySelector('#value-container')?.clientWidth - 32 ?? 0;
 
     const height =
       (document.querySelector('#value-container')?.clientHeight ?? 0) -
@@ -217,7 +221,7 @@ const ValueDetail = (props: Props): JSX.Element => {
         onSave={handleSave}
         onLanguageChange={handleLanguageChange}
       />
-      {redisKey && <div style={{ ...size }} ref={monacoContainer} />}
+      {redisKey && <div style={{ ...size, margin: 'auto' }} ref={monacoContainer} />}
       <Confirm />
       <ExpireKey />
       <RenameKey />
