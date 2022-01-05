@@ -1,4 +1,4 @@
-import { Connection, DbInfo } from './interfaces';
+import { Connection, DbInfo, Settings } from './interfaces';
 
 export const CHANNEL_NAME = 'async-message';
 
@@ -15,6 +15,8 @@ export enum MessageType {
   RENAME_KEY,
   SET_KEY_EXPIRY,
   ERROR,
+  GET_SETTINGS,
+  SAVE_SETTINGS,
 }
 
 export interface Message {
@@ -76,4 +78,12 @@ export interface SetKeyExpiry extends Message {
 }
 export interface ErrorMessage extends Message {
   message: string;
+}
+
+export interface GetSettings extends Message {
+  settings: Settings;
+}
+
+export interface SaveSettings extends Message {
+  settings: Settings;
 }
