@@ -1,8 +1,18 @@
 import { alpha, createTheme, CSSInterpolation } from '@mui/material';
 import { CSSProperties } from '@mui/styled-engine';
-import { theme } from './base';
+import { theme } from '../base';
 
-import { CoolGrey } from './colours';
+import { CoolGrey } from '../colours';
+
+import { MuiButton } from './overrides/MuiButton';
+import { MuiDialog } from './overrides/MuiDialog';
+import { MuiDialogActions } from './overrides/MuiDialogActions';
+import { MuiDialogTitle } from './overrides/MuiDialogTitle';
+import { MuiListItemText } from './overrides/MuiListItemText';
+import { MuiMenuItem } from './overrides/MuiMenuItem';
+import { MuiOutlinedInput } from './overrides/MuiOutlinedInput';
+import { MuiPopover } from './overrides/MuiPopover';
+import { MuiTextField } from './overrides/MuiTextField';
 
 // main #c0392b
 // secondary #2980b9
@@ -48,6 +58,7 @@ export const darkTheme = createTheme({
   ...theme,
   palette: {
     ...theme.palette,
+    mode: 'dark',
     background: {
       default: alpha(CoolGrey[700], 1),
     },
@@ -61,5 +72,14 @@ export const darkTheme = createTheme({
   },
   components: {
     ...theme.components,
+    MuiButton,
+    MuiDialog,
+    MuiDialogActions,
+    MuiDialogTitle,
+    MuiListItemText,
+    MuiMenuItem,
+    MuiOutlinedInput,
+    MuiPopover,
+    MuiTextField,
   },
 });
