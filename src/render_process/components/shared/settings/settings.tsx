@@ -53,7 +53,7 @@ const Settings = ({ open, onClose }: Props) => {
         <Button variant="text" onClick={onClose}>
           Cancel
         </Button>
-        <Button color="secondary" variant="contained" onClick={handleSave}>
+        <Button color="primary" variant="contained" onClick={handleSave}>
           Save
         </Button>
       </DialogActions>

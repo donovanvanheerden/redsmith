@@ -22,16 +22,16 @@ const RenameKey = ({ title, oldName, onConfirm, ...modalProps }: Props): JSX.Ele
   const handleConfirm = () => onConfirm(newName);
 
   return (
-    <Dialog {...modalProps}>
+    <Dialog {...modalProps} fullWidth maxWidth="xs">
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <TextField onChange={handleChange} value={newName} />
+        <TextField fullWidth onChange={handleChange} value={newName} />
       </DialogContent>
       <DialogActions>
         <Button variant="text" onClick={modalProps.onClose}>
           Cancel
         </Button>
-        <Button color="secondary" variant="contained" onClick={handleConfirm}>
+        <Button color="primary" variant="contained" onClick={handleConfirm}>
           Confirm
         </Button>
       </DialogActions>
