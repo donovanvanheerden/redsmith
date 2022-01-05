@@ -25,7 +25,10 @@ interface SelectorState {
   value: string;
   key: string;
   hasConnection: boolean;
+  autoFormat: boolean;
 }
+
+const defaultLanguage = 'text';
 
 const ValueDetail = (props: Props): JSX.Element => {
   const changeTracker = React.useRef<monaco.IDisposable>();
@@ -37,10 +40,12 @@ const ValueDetail = (props: Props): JSX.Element => {
     value: redisValue,
     key: redisKey,
     hasConnection,
+    autoFormat,
   } = useAppSelector<SelectorState>((state) => ({
     key: state.redis.selectedKey,
     value: state.redis.value || '',
     hasConnection: Boolean(state.redis.name),
+    autoFormat: state.settings.autoFormat,
   }));
 
   // const [canSave, setCanSave] = React.useState(false);
@@ -51,7 +56,7 @@ const ValueDetail = (props: Props): JSX.Element => {
     width: 0,
   });
 
-  const [language, setLanguage] = React.useState('text');
+  const [language, setLanguage] = React.useState(defaultLanguage);
 
   const monacoContainer = React.useRef<HTMLDivElement>();
 
@@ -83,7 +88,7 @@ const ValueDetail = (props: Props): JSX.Element => {
         },
       });
     } else {
-      setLanguage('text');
+      setLanguage(defaultLanguage);
     }
 
     if (changeTracker.current) changeTracker.current.dispose();
@@ -97,7 +102,11 @@ const ValueDetail = (props: Props): JSX.Element => {
     const model = monacoEditor.current.getModel();
 
     monaco.editor.setModelLanguage(model, language);
-  }, [language]);
+
+    if (autoFormat) {
+      monacoEditor.current.getAction('editor.action.formatDocument').run();
+    }
+  }, [autoFormat, language]);
 
   React.useEffect(() => {
     if (!monacoEditor.current) return;
@@ -107,11 +116,14 @@ const ValueDetail = (props: Props): JSX.Element => {
 
   React.useEffect(() => {
     if (!monacoEditor.current) return;
+    if (monacoEditor.current.getValue() === redisValue) return;
 
-    if (monacoEditor.current.getValue() !== redisValue) {
-      monacoEditor.current.setValue(redisValue);
+    monacoEditor.current.setValue(redisValue);
+
+    if (autoFormat) {
+      monacoEditor.current.getAction('editor.action.formatDocument').run();
     }
-  }, [redisValue]);
+  }, [autoFormat, redisValue]);
 
   const calculateBounds = React.useCallback(() => {
     const width = document.querySelector('#value-container')?.clientWidth ?? 0;
@@ -141,6 +153,9 @@ const ValueDetail = (props: Props): JSX.Element => {
   const handleSave = async () => {
     const value = monacoEditor.current.getValue();
 
+    // to get format errors
+    //console.log(monaco.editor.getModelMarkers({}));
+
     void ipc.setValue(redisKey, value);
 
     dispatch(redisActions.setRedisKeySelection({ key: redisKey, value }));
@@ -152,6 +167,10 @@ const ValueDetail = (props: Props): JSX.Element => {
     dispatch(redisActions.setRedisKeySelection({ key: redisKey, value }));
 
     monacoEditor.current.setValue(value);
+
+    if (autoFormat) {
+      monacoEditor.current.getAction('editor.action.formatDocument').run();
+    }
   };
 
   const handleRemove = async () => {
