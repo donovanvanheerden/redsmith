@@ -10,11 +10,14 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 
 import AddIcon from '@mui/icons-material/Add';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import { Root } from './connectionBar.styles';
 
 import ConnectionButton from '../connectionButton/connectionButton';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import useSettingsModal from '../../hooks/useSettings';
+import { settingsActions } from '../../store/reducers/settings-slice';
 
 interface SelectorState {
   connections: Record<string, Connection>;
@@ -36,16 +39,20 @@ const ConnectionBar = () => {
 
   const ipc = useIpc();
 
+  const { handleOpen, Settings } = useSettingsModal();
+
   const dispatch = useAppDispatch();
 
-  const fetchConnections = React.useCallback(async () => {
+  const fetchSettingsAndConnections = React.useCallback(async () => {
     const connections = await ipc.getConnections();
+    const settings = await ipc.getSettings();
 
     dispatch(connectionActions.setConnections(connections));
+    dispatch(settingsActions.saveSettings(settings));
   }, []);
 
   React.useEffect(() => {
-    fetchConnections();
+    fetchSettingsAndConnections();
   }, []);
 
   const handleNewConnection = () => {
@@ -124,6 +131,11 @@ const ConnectionBar = () => {
           onRightClick={handleContextMenu(connections[name])}
         />
       ))}
+      <ConnectionButton title="Settings">
+        <IconButton color="inherit" onClick={handleOpen}>
+          <SettingsIcon />
+        </IconButton>
+      </ConnectionButton>
       <Menu
         open={contextMenu !== null}
         onClose={handleClose}
@@ -134,6 +146,7 @@ const ConnectionBar = () => {
         <MenuItem onClick={handleEditConnection}>Edit</MenuItem>
         <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </Menu>
+      <Settings />
     </Root>
   );
 };
