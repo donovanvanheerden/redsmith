@@ -1,4 +1,4 @@
-import { alpha, styled, Button, InputBase, iconButtonClasses } from '@mui/material';
+import { alpha, styled, Button, InputBase, iconButtonClasses, inputBaseClasses } from '@mui/material';
 
 export const Form = styled('form')(({ theme: { spacing } }) => ({
   display: 'flex',
@@ -20,6 +20,9 @@ export const SearchField = styled(InputBase, {
     borderRadius: spacing(0.5),
     color: 'inherit',
     padding: spacing(0.5),
+  },
+  [`& .${inputBaseClasses.input}`]: {
+    padding: 0,
   },
 }));
 
