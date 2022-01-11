@@ -1,6 +1,6 @@
 {
-  "name": "redily-clone",
-  "productName": "redily-clone",
+  "name": "redsmith",
+  "productName": "redsmith",
   "version": "1.0.0",
   "description": "Redis GUI Client, clone of Redily",
   "main": ".webpack/main",
@@ -58,7 +58,12 @@
                     "js": "./src/preload.ts"
                   }
                 }
-              ]
+              ],
+              "resolve": {
+                "alias": {
+                  "src": "./src"
+                }
+              }
             }
           }
         ]
@@ -73,8 +78,10 @@
     "@electron-forge/maker-zip": "6.0.0-beta.61",
     "@electron-forge/plugin-webpack": "6.0.0-beta.61",
     "@types/ioredis": "^4.28.1",
+    "@types/node": "^16.11.9",
     "@types/react": "^17.0.34",
     "@types/react-dom": "^17.0.11",
+    "@types/webpack-env": "^1.16.3",
     "@typescript-eslint/eslint-plugin": "^5.3.0",
     "@typescript-eslint/parser": "^5.3.0",
     "@vercel/webpack-asset-relocator-loader": "1.7.0",
@@ -95,6 +102,7 @@
     "@mui/icons-material": "^5.0.5",
     "@mui/material": "^5.0.6",
     "@reduxjs/toolkit": "^1.6.2",
+    "clsx": "^1.1.1",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.0.1",
     "inversify": "^6.0.1",
@@ -104,6 +112,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
+    "react-virtuoso": "^2.4.0",
     "reflect-metadata": "^0.1.13"
   }
 }

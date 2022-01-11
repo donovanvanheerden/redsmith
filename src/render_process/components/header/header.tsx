@@ -7,7 +7,7 @@ interface Props {
 }
 
 const Header = ({ className, title }: Props): JSX.Element => (
-  <HeadingTitle className={className} variant="h4">
+  <HeadingTitle className={className} variant="h5">
     {title}
   </HeadingTitle>
 );

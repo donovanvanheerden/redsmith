@@ -1,24 +1,10 @@
 import * as React from 'react';
-import {
-  IconButton,
-  MenuItem,
-  SelectChangeEvent,
-  Toolbar,
-  Tooltip,
-  Typography,
-} from '@mui/material';
-
-import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
-import CachedOutlinedIcon from '@mui/icons-material/CachedOutlined';
-import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import { SelectChangeEvent, useTheme } from '@mui/material';
 
 import * as monaco from 'monaco-editor';
 import '../../disabledActions';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useIpc } from '../../hooks/useFromDi';
 import { redisActions } from '../../store/reducers/redis-slice';
 
@@ -26,12 +12,10 @@ import useConfirmModal from '../../hooks/useConfirmModal';
 import useRenameKeyModal from '../../hooks/useRenameKey';
 import useExpireKeyModal from '../../hooks/useExpireKey';
 
-import {
-  ButtonToolbar,
-  LanguageSelector,
-  ValueContainer,
-  ValueHeader,
-} from './valueDetail.styles';
+import { Header } from '../header';
+import { ValueContainer } from './valueDetail.styles';
+import EditorToolbar from '../editorToolbar/EditorToolbar';
+import { Settings } from '../../../core/interfaces';
 
 interface Props {
   className?: string;
@@ -41,23 +25,32 @@ interface Props {
 interface SelectorState {
   value: string;
   key: string;
+  hasConnection: boolean;
+  settings: Settings;
 }
 
 const ValueDetail = (props: Props): JSX.Element => {
   const changeTracker = React.useRef<monaco.IDisposable>();
+
+  const theme = useTheme();
+
   const { Confirm, handleShow } = useConfirmModal();
   const { RenameKey, handleShow: handleShowRename } = useRenameKeyModal();
   const { ExpireKey, handleShow: handleShowExpire } = useExpireKeyModal();
 
-  const { value: redisValue, key: redisKey } = useSelector<
-    RootState,
-    SelectorState
-  >((state) => ({
+  const {
+    value: redisValue,
+    key: redisKey,
+    hasConnection,
+    settings,
+  } = useAppSelector<SelectorState>((state) => ({
     key: state.redis.selectedKey,
     value: state.redis.value || '',
+    hasConnection: Boolean(state.redis.name),
+    settings: state.settings,
   }));
 
-  const [canSave, setCanSave] = React.useState(false);
+  // const [canSave, setCanSave] = React.useState(false);
 
   const monacoEditor = React.useRef<monaco.editor.IStandaloneCodeEditor>();
   const [size, setSize] = React.useState<{ height: number; width: number }>({
@@ -65,20 +58,20 @@ const ValueDetail = (props: Props): JSX.Element => {
     width: 0,
   });
 
-  const [language, setLanguage] = React.useState('text');
+  const [language, setLanguage] = React.useState(settings.preferredLanguage);
 
   const monacoContainer = React.useRef<HTMLDivElement>();
 
   const ipc = useIpc();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const hasKey = Boolean(redisKey);
 
-  const handleTrackChanges = React.useCallback(() => {
-    const exact = redisValue === monacoEditor.current.getValue();
+  // const handleTrackChanges = React.useCallback(() => {
+  //   const exact = redisValue === monacoEditor.current.getValue();
 
-    if (!exact) setCanSave(true);
-  }, [redisValue]);
+  //   if (!exact) setCanSave(true);
+  // }, [redisValue]);
 
   React.useEffect(() => {
     if (!redisKey && monacoEditor.current) {
@@ -92,16 +85,23 @@ const ValueDetail = (props: Props): JSX.Element => {
       monacoEditor.current = monaco.editor.create(monacoContainer.current, {
         value: '',
         language,
+        minimap: {
+          enabled: false,
+        },
+        theme: theme.palette.mode === 'dark' ? 'vs-dark' : 'vs',
       });
     } else {
-      setLanguage('text');
+      setLanguage(settings.preferredLanguage);
     }
 
     if (changeTracker.current) changeTracker.current.dispose();
 
-    changeTracker.current =
-      monacoEditor.current.onDidChangeModelContent(handleTrackChanges);
-  }, [redisKey, handleTrackChanges]);
+    // changeTracker.current = monacoEditor.current.onDidChangeModelContent(handleTrackChanges);
+  }, [redisKey]);
+
+  React.useEffect(() => {
+    if (language !== settings.preferredLanguage) setLanguage(settings.preferredLanguage);
+  }, [settings.preferredLanguage]);
 
   React.useEffect(() => {
     if (!monacoEditor.current) return;
@@ -109,7 +109,11 @@ const ValueDetail = (props: Props): JSX.Element => {
     const model = monacoEditor.current.getModel();
 
     monaco.editor.setModelLanguage(model, language);
-  }, [language]);
+
+    if (settings.autoFormat) {
+      monacoEditor.current.getAction('editor.action.formatDocument').run();
+    }
+  }, [settings.autoFormat, language]);
 
   React.useEffect(() => {
     if (!monacoEditor.current) return;
@@ -119,18 +123,22 @@ const ValueDetail = (props: Props): JSX.Element => {
 
   React.useEffect(() => {
     if (!monacoEditor.current) return;
+    if (monacoEditor.current.getValue() === redisValue) return;
 
-    if (monacoEditor.current.getValue() !== redisValue) {
-      monacoEditor.current.setValue(redisValue);
+    monacoEditor.current.setValue(redisValue);
+
+    if (settings.autoFormat) {
+      monacoEditor.current.getAction('editor.action.formatDocument').run();
     }
-  }, [redisValue]);
+  }, [settings.autoFormat, redisValue]);
 
   const calculateBounds = React.useCallback(() => {
-    const width = document.querySelector('#value-container').clientWidth;
+    const width = document.querySelector('#value-container')?.clientWidth - 32 ?? 0;
+
     const height =
-      document.querySelector('#value-container').clientHeight -
-      (document.querySelector('#value-toolbar') as HTMLElement).offsetTop -
-      120;
+      (document.querySelector('#value-container')?.clientHeight ?? 0) -
+      ((document.querySelector('#editor-toolbar') as HTMLElement)?.offsetTop ?? 0) -
+      64;
 
     setSize({ width, height });
   }, []);
@@ -143,16 +151,17 @@ const ValueDetail = (props: Props): JSX.Element => {
     return () => {
       window.removeEventListener('resize', calculateBounds);
     };
-  }, []);
+  }, [hasKey]);
 
   const handleLanguageChange = (event: SelectChangeEvent<string>) => {
-    setLanguage(event.target.value);
+    setLanguage(event.target.value as Settings['preferredLanguage']);
   };
 
   const handleSave = async () => {
-    setCanSave(false);
-
     const value = monacoEditor.current.getValue();
+
+    // to get format errors
+    //console.log(monaco.editor.getModelMarkers({}));
 
     void ipc.setValue(redisKey, value);
 
@@ -165,12 +174,14 @@ const ValueDetail = (props: Props): JSX.Element => {
     dispatch(redisActions.setRedisKeySelection({ key: redisKey, value }));
 
     monacoEditor.current.setValue(value);
+
+    if (settings.autoFormat) {
+      monacoEditor.current.getAction('editor.action.formatDocument').run();
+    }
   };
 
   const handleRemove = async () => {
-    const confirmed = await handleShow(
-      `Are you sure you wish to remove the key "${redisKey}"?`
-    );
+    const confirmed = await handleShow(`Are you sure you wish to remove the key "${redisKey}"?`);
 
     if (!confirmed) return;
 
@@ -197,75 +208,22 @@ const ValueDetail = (props: Props): JSX.Element => {
     void ipc.setKeyExpiry(redisKey, newExpiry);
   };
 
-  return (
-    <ValueContainer
-      id="value-container"
-      style={{ height: '100vh' }}
-      xs={6}
-      className={props.className}
-      item
-    >
-      <ValueHeader title="Value Detail" />
-      <ButtonToolbar id="value-toolbar">
-        <Tooltip title="Save">
-          <span>
-            <IconButton
-              onClick={handleSave}
-              disabled={!hasKey || !canSave}
-              size="large"
-            >
-              <SaveOutlinedIcon />
-            </IconButton>
-          </span>
-        </Tooltip>
-        <Tooltip title="Refresh">
-          <span>
-            <IconButton onClick={handleRefresh} disabled={!hasKey} size="large">
-              <CachedOutlinedIcon />
-            </IconButton>
-          </span>
-        </Tooltip>
-        <Tooltip title="Set Expiration">
-          <span>
-            <IconButton onClick={handleExpire} disabled={!hasKey} size="large">
-              <ScheduleOutlinedIcon />
-            </IconButton>
-          </span>
-        </Tooltip>
-        <Tooltip title="Rename Key">
-          <span>
-            <IconButton onClick={handleRename} disabled={!hasKey} size="large">
-              <EditOutlinedIcon />
-            </IconButton>
-          </span>
-        </Tooltip>
-        <Tooltip title="Delete">
-          <span>
-            <IconButton onClick={handleRemove} disabled={!hasKey} size="large">
-              <DeleteOutlineOutlinedIcon />
-            </IconButton>
-          </span>
-        </Tooltip>
-      </ButtonToolbar>
+  if (!hasConnection) return null;
 
-      {redisKey && (
-        <React.Fragment>
-          <div style={{ ...size }} ref={monacoContainer} />
-          <div style={{ display: 'flex', zIndex: 999 }}>
-            <Toolbar id="language-change">
-              <Typography>Language: </Typography>
-              <LanguageSelector
-                value={language}
-                onChange={handleLanguageChange}
-              >
-                <MenuItem value="text">Text</MenuItem>
-                <MenuItem value="json">JSON</MenuItem>
-                <MenuItem value="xml">XML</MenuItem>
-              </LanguageSelector>
-            </Toolbar>
-          </div>
-        </React.Fragment>
-      )}
+  return (
+    <ValueContainer id="value-container" style={{ height: '100vh' }} xs={6} className={props.className} item>
+      <Header title="Editor" />
+      <EditorToolbar
+        id="editor-toolbar"
+        disabled={!hasKey}
+        onDelete={handleRemove}
+        onExpire={handleExpire}
+        onRefresh={handleRefresh}
+        onRename={handleRename}
+        onSave={handleSave}
+        onLanguageChange={handleLanguageChange}
+      />
+      {redisKey && <div style={{ ...size, margin: 'auto' }} ref={monacoContainer} />}
       <Confirm />
       <ExpireKey />
       <RenameKey />

@@ -27,3 +27,8 @@ export interface Connection {
   port: number;
   password: string;
 }
+
+export interface Settings {
+  autoFormat: boolean;
+  preferredLanguage: 'json' | 'text' | 'xml';
+}
