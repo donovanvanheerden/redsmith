@@ -8,10 +8,10 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 import { ButtonToolbar, LanguageSelector } from './EditorToolbar.styles';
+import { useAppSelector } from '../../hooks';
 
 interface Props {
   id?: string;
-  language?: string;
   disabled?: boolean;
   onExpire?: () => void;
   onDelete?: () => void;
@@ -21,17 +21,9 @@ interface Props {
   onSave?: () => void;
 }
 
-const EditorToolbar = ({
-  id,
-  disabled,
-  language,
-  onDelete,
-  onExpire,
-  onLanguageChange,
-  onSave,
-  onRefresh,
-  onRename,
-}: Props) => {
+const EditorToolbar = ({ id, disabled, onDelete, onExpire, onLanguageChange, onSave, onRefresh, onRename }: Props) => {
+  const selectedLanguage = useAppSelector<string>((state) => state.settings.preferredLanguage);
+
   return (
     <ButtonToolbar id={id}>
       <Tooltip title="Save">
@@ -69,7 +61,7 @@ const EditorToolbar = ({
           </IconButton>
         </span>
       </Tooltip>
-      <LanguageSelector value={language} disabled={disabled} onChange={onLanguageChange}>
+      <LanguageSelector value={selectedLanguage} disabled={disabled} onChange={onLanguageChange}>
         <MenuItem value="text">Text</MenuItem>
         <MenuItem value="json">JSON</MenuItem>
         <MenuItem value="xml">XML</MenuItem>

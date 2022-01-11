@@ -15,6 +15,7 @@ import useExpireKeyModal from '../../hooks/useExpireKey';
 import { Header } from '../header';
 import { ValueContainer } from './valueDetail.styles';
 import EditorToolbar from '../editorToolbar/EditorToolbar';
+import { Settings } from '../../../core/interfaces';
 
 interface Props {
   className?: string;
@@ -25,10 +26,8 @@ interface SelectorState {
   value: string;
   key: string;
   hasConnection: boolean;
-  autoFormat: boolean;
+  settings: Settings;
 }
-
-const defaultLanguage = 'text';
 
 const ValueDetail = (props: Props): JSX.Element => {
   const changeTracker = React.useRef<monaco.IDisposable>();
@@ -43,12 +42,12 @@ const ValueDetail = (props: Props): JSX.Element => {
     value: redisValue,
     key: redisKey,
     hasConnection,
-    autoFormat,
+    settings,
   } = useAppSelector<SelectorState>((state) => ({
     key: state.redis.selectedKey,
     value: state.redis.value || '',
     hasConnection: Boolean(state.redis.name),
-    autoFormat: state.settings.autoFormat,
+    settings: state.settings,
   }));
 
   // const [canSave, setCanSave] = React.useState(false);
@@ -59,7 +58,7 @@ const ValueDetail = (props: Props): JSX.Element => {
     width: 0,
   });
 
-  const [language, setLanguage] = React.useState(defaultLanguage);
+  const [language, setLanguage] = React.useState(settings.preferredLanguage);
 
   const monacoContainer = React.useRef<HTMLDivElement>();
 
@@ -92,7 +91,7 @@ const ValueDetail = (props: Props): JSX.Element => {
         theme: theme.palette.mode === 'dark' ? 'vs-dark' : 'vs',
       });
     } else {
-      setLanguage(defaultLanguage);
+      setLanguage(settings.preferredLanguage);
     }
 
     if (changeTracker.current) changeTracker.current.dispose();
@@ -101,16 +100,20 @@ const ValueDetail = (props: Props): JSX.Element => {
   }, [redisKey]);
 
   React.useEffect(() => {
+    if (language !== settings.preferredLanguage) setLanguage(settings.preferredLanguage);
+  }, [settings.preferredLanguage]);
+
+  React.useEffect(() => {
     if (!monacoEditor.current) return;
 
     const model = monacoEditor.current.getModel();
 
     monaco.editor.setModelLanguage(model, language);
 
-    if (autoFormat) {
+    if (settings.autoFormat) {
       monacoEditor.current.getAction('editor.action.formatDocument').run();
     }
-  }, [autoFormat, language]);
+  }, [settings.autoFormat, language]);
 
   React.useEffect(() => {
     if (!monacoEditor.current) return;
@@ -124,10 +127,10 @@ const ValueDetail = (props: Props): JSX.Element => {
 
     monacoEditor.current.setValue(redisValue);
 
-    if (autoFormat) {
+    if (settings.autoFormat) {
       monacoEditor.current.getAction('editor.action.formatDocument').run();
     }
-  }, [autoFormat, redisValue]);
+  }, [settings.autoFormat, redisValue]);
 
   const calculateBounds = React.useCallback(() => {
     const width = document.querySelector('#value-container')?.clientWidth - 32 ?? 0;
@@ -151,7 +154,7 @@ const ValueDetail = (props: Props): JSX.Element => {
   }, [hasKey]);
 
   const handleLanguageChange = (event: SelectChangeEvent<string>) => {
-    setLanguage(event.target.value);
+    setLanguage(event.target.value as Settings['preferredLanguage']);
   };
 
   const handleSave = async () => {
@@ -172,7 +175,7 @@ const ValueDetail = (props: Props): JSX.Element => {
 
     monacoEditor.current.setValue(value);
 
-    if (autoFormat) {
+    if (settings.autoFormat) {
       monacoEditor.current.getAction('editor.action.formatDocument').run();
     }
   };
@@ -213,7 +216,6 @@ const ValueDetail = (props: Props): JSX.Element => {
       <EditorToolbar
         id="editor-toolbar"
         disabled={!hasKey}
-        language={language}
         onDelete={handleRemove}
         onExpire={handleExpire}
         onRefresh={handleRefresh}
