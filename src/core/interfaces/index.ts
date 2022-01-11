@@ -30,4 +30,5 @@ export interface Connection {
 
 export interface Settings {
   autoFormat: boolean;
+  preferredLanguage: 'json' | 'text' | 'xml';
 }

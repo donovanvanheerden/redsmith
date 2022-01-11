@@ -10,6 +10,7 @@ const initialState: StoreSchema = {
   connections: {},
   settings: {
     autoFormat: true,
+    preferredLanguage: 'text',
   },
 };
 
