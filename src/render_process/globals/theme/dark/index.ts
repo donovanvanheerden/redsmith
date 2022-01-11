@@ -8,10 +8,12 @@ import { MuiButton } from './overrides/MuiButton';
 import { MuiDialog } from './overrides/MuiDialog';
 import { MuiDialogActions } from './overrides/MuiDialogActions';
 import { MuiDialogTitle } from './overrides/MuiDialogTitle';
+import { MuiFormControlLabel } from './overrides/MuiFormControlLabel';
 import { MuiListItemText } from './overrides/MuiListItemText';
 import { MuiMenuItem } from './overrides/MuiMenuItem';
 import { MuiOutlinedInput } from './overrides/MuiOutlinedInput';
 import { MuiPopover } from './overrides/MuiPopover';
+import { MuiRadio } from './overrides/MuiRadio';
 import { MuiTextField } from './overrides/MuiTextField';
 
 // main #c0392b
@@ -76,10 +78,12 @@ export const darkTheme = createTheme({
     MuiDialog,
     MuiDialogActions,
     MuiDialogTitle,
+    MuiFormControlLabel,
     MuiListItemText,
     MuiMenuItem,
     MuiOutlinedInput,
     MuiPopover,
+    MuiRadio,
     MuiTextField,
   },
 });
