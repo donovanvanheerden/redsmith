@@ -3,7 +3,6 @@ import React from 'react';
 import { Connection } from '../../../core/interfaces';
 import { useIpc } from '../../hooks/useFromDi';
 import { connectionActions } from '../../store/reducers/connection-slice';
-import { formActions } from '../../store/reducers/form-slice';
 import { redisActions } from '../../store/reducers/redis-slice';
 
 import MenuItem from '@mui/material/MenuItem';
@@ -18,6 +17,7 @@ import ConnectionButton from '../connectionButton/connectionButton';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import useSettingsModal from '../../hooks/useSettings';
 import { settingsActions } from '../../store/reducers/settings-slice';
+import useNewConnectionModal from '../../hooks/useNewConnection';
 
 interface SelectorState {
   connections: Record<string, Connection>;
@@ -39,6 +39,8 @@ const ConnectionBar = () => {
 
   const ipc = useIpc();
 
+  const { handleShow, NewConnection } = useNewConnectionModal();
+
   const { handleOpen, Settings } = useSettingsModal();
 
   const dispatch = useAppDispatch();
@@ -54,17 +56,6 @@ const ConnectionBar = () => {
   React.useEffect(() => {
     fetchSettingsAndConnections();
   }, []);
-
-  const handleNewConnection = () => {
-    const connection = {
-      formOpen: true,
-      name: '',
-      host: '',
-      port: 0,
-    };
-
-    dispatch(formActions.showForm(connection));
-  };
 
   const handleSwitchConnection = (name: string) => async () => {
     console.log('this should change connection or create connection to: ', name);
@@ -118,7 +109,7 @@ const ConnectionBar = () => {
   return (
     <Root>
       <ConnectionButton title="Create Connection">
-        <IconButton color="inherit" onClick={handleNewConnection} size="large">
+        <IconButton color="inherit" onClick={handleShow} size="large">
           <AddIcon />
         </IconButton>
       </ConnectionButton>
@@ -147,6 +138,7 @@ const ConnectionBar = () => {
         <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </Menu>
       <Settings />
+      <NewConnection />
     </Root>
   );
 };
