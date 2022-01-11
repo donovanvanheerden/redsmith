@@ -41,7 +41,7 @@ const NewConnection = ({ open, onClose }: Props) => {
     const errors: Record<string, string> = {};
 
     formData.forEach((fieldValue, fieldKey) => {
-      if (fieldValue === '' && fieldKey !== 'ConnPassword') {
+      if (fieldValue === '' && fieldKey !== 'password') {
         errors[fieldKey] = 'Please enter value.';
       }
     });
