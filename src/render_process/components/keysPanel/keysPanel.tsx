@@ -1,12 +1,11 @@
 import * as React from 'react';
+import { Virtuoso } from 'react-virtuoso';
 
-import { GridWrapper, List } from './keyList.styles';
+import { GridWrapper } from './keyList.styles';
 
 import { Header } from '../header';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { useIpc } from '../../hooks/useFromDi';
+import { useAppSelector } from '../../hooks';
 import { KeysSearch } from '../keysSearch';
-import { redisActions } from '../../store/reducers/redis-slice';
 import { KeyItem } from '../keyItem';
 
 interface Props {
@@ -16,29 +15,29 @@ interface Props {
 
 interface SelectorState {
   keys: string[];
+  keyCount: number;
   hasConnection: boolean;
-  selectedKey?: string;
 }
 
 const KeysPanel = ({ className }: Props): JSX.Element => {
-  const { keys, hasConnection, selectedKey } = useAppSelector<SelectorState>((state) => ({
+  const { keys, hasConnection } = useAppSelector<SelectorState>((state) => ({
     keys: state.redis.keys,
+    keyCount: state.redis.keys.length,
     hasConnection: Boolean(state.redis.name),
-    selectedKey: state.redis.selectedKey,
   }));
 
-  const dispatch = useAppDispatch();
-
-  const ipc = useIpc();
-
   const [height, setHeight] = React.useState(0);
+  // const [width, setWidth] = React.useState(0);
 
   const calculateHeight = React.useCallback(() => {
     const height =
       document.querySelector('#key-container').clientHeight -
       (document.querySelector('#key-list') as HTMLElement).offsetTop;
 
+    // const width = document.querySelector('#key-container').clientWidth;
+
     setHeight(height);
+    // setWidth(width);
   }, []);
 
   React.useEffect(() => {
@@ -51,23 +50,21 @@ const KeysPanel = ({ className }: Props): JSX.Element => {
     };
   }, []);
 
-  const handleKeySelection = (key: string) => async () => {
-    const { value } = await ipc.getValue(key);
-
-    dispatch(redisActions.setRedisKeySelection({ key, value }));
-  };
-
   const xs = hasConnection ? 6 : 12;
 
   return (
     <GridWrapper id="key-container" xs={xs} className={className} item>
       <Header title="Keys" />
       <KeysSearch />
-      <List id="key-list" style={{ height }}>
-        {keys.slice(0, 20).map((key) => (
-          <KeyItem key={key} keyName={key} selected={key === selectedKey} onClick={handleKeySelection(key)} />
-        ))}
-      </List>
+      <span id="key-list">
+        <Virtuoso
+          height={height}
+          style={{ padding: '0 8px' }}
+          data={keys}
+          totalCount={keys.length}
+          itemContent={(index, data) => <KeyItem key={data} data={data} index={index} />}
+        />
+      </span>
     </GridWrapper>
   );
 };
