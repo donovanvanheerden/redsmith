@@ -6,6 +6,7 @@ export const KeyRoot = styled(ListItemButton, {
   slot: 'Root',
   overridesResolver: (props, styles) => [styles.root],
 })(({ theme: { palette, spacing } }) => ({
+  width: `calc(100% - 16px)`,
   ['&:hover']: {
     backgroundColor: alpha(palette.grey[800], 0.4),
     borderRadius: spacing(),
