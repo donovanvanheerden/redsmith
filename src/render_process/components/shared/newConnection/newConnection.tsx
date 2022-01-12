@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -13,6 +12,8 @@ import { redisActions } from '../../../store/reducers/redis-slice';
 import { connectionActions } from '../../../store/reducers/connection-slice';
 import { Connection } from '../../../../core/interfaces';
 import { useAppDispatch } from '../../../hooks';
+
+import { RedTextField } from './newConnection.styles';
 
 interface AlertMessage {
   open: boolean;
@@ -88,52 +89,55 @@ const NewConnection = ({ open, onClose }: Props) => {
         <DialogTitle id="form-dialog-title">New Connection</DialogTitle>
         <form onSubmit={handleSubmit}>
           <DialogContent>
-            <TextField
+            <RedTextField
               name="name"
               variant="filled"
               label="Name"
               size="small"
               error={Boolean(errors['name'])}
               helperText={errors['name']}
-              defaultValue="localhost"
               fullWidth
+              placeholder="Development Server"
+              InputLabelProps={{
+                shrink: true,
+              }}
               sx={{ mb: 1 }}
             />
             <span style={{ display: 'flex', marginBottom: 8 }}>
-              <TextField
+              <RedTextField
                 name="host"
                 variant="filled"
                 label="Host"
                 size="small"
+                placeholder="127.0.0.1"
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 error={Boolean(errors['host'])}
                 helperText={errors['host']}
-                defaultValue="localhost"
               />
-              <TextField
+              <RedTextField
                 name="port"
                 variant="filled"
                 label="Port"
                 size="small"
                 type="number"
+                placeholder="6379"
                 InputLabelProps={{
                   shrink: true,
                 }}
                 error={Boolean(errors['port'])}
                 helperText={errors['port']}
-                defaultValue="6379"
                 sx={{ marginLeft: 0.5, width: 96 }}
               />
             </span>
-            <TextField
+            <RedTextField
               id="Password"
               name="password"
               variant="filled"
               label="Password"
               size="small"
               type="password"
-              InputLabelProps={{
-                shrink: true,
-              }}
               error={Boolean(errors['password'])}
               helperText={errors['password']}
               fullWidth
