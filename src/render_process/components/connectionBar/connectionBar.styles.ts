@@ -3,7 +3,7 @@ import redConnectionButtonClasses from '../connectionButton/connectionButtonClas
 
 export const Root = styled('div')(({ theme: { palette, spacing } }) => ({
   backgroundColor: palette.grey[900],
-  height: '100vh',
+  height: `calc(100vh - ${spacing(4)})`,
   width: spacing(10),
   padding: spacing(),
   display: 'flex',
