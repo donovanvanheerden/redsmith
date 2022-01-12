@@ -18,6 +18,9 @@ export enum MessageType {
   GET_SETTINGS,
   SAVE_SETTINGS,
   GET_KEYS,
+  MINIMIZE,
+  MAXIMIZE,
+  CLOSE,
 }
 
 export interface Message {

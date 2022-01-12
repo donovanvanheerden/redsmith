@@ -3,6 +3,8 @@ import { Connection } from '../core/interfaces';
 import { IRedisClient, RedisClient } from '../core/redisClient';
 import Store from '../core/store';
 
+import { getWindow } from './Main';
+
 import * as Messages from '../core/WindowMessages';
 
 interface IMainIpc {
@@ -59,6 +61,16 @@ export class MainIpc implements IMainIpc {
           break;
         case Messages.MessageType.GET_SETTINGS:
           reply = await this._handleGetSettings();
+          break;
+        // Window Controls
+        case Messages.MessageType.CLOSE:
+          this._handleClose();
+          break;
+        case Messages.MessageType.MAXIMIZE:
+          this._handleMaximize();
+          break;
+        case Messages.MessageType.MINIMIZE:
+          this._handleMinimize();
           break;
         default:
           break;
@@ -208,5 +220,27 @@ export class MainIpc implements IMainIpc {
     Store.set('settings', message.settings);
 
     return Promise.resolve();
+  }
+
+  private _handleClose() {
+    const win = getWindow();
+
+    win.close();
+  }
+
+  private _handleMaximize() {
+    const win = getWindow();
+
+    if (win.isMaximized()) {
+      win.unmaximize();
+    } else {
+      win.maximize();
+    }
+  }
+
+  private _handleMinimize() {
+    const win = getWindow();
+
+    if (win.minimizable) win.minimize();
   }
 }
