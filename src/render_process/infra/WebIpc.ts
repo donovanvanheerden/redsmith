@@ -71,6 +71,11 @@ export interface IWebIpc {
    * @param settings Settings Object from redux store
    */
   saveSettings: (settings: Settings) => Promise<void>;
+
+  // window controls
+  close: () => void;
+  minimize: () => void;
+  maximize: () => void;
 }
 
 @injectable()
@@ -190,5 +195,29 @@ export default class WebIpc implements IWebIpc {
     };
 
     return await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
+  }
+
+  async close(): Promise<void> {
+    const msg: Messages.Message = {
+      type: Messages.MessageType.CLOSE,
+    };
+
+    ipc.send(Messages.CHANNEL_NAME, msg);
+  }
+
+  async minimize(): Promise<void> {
+    const msg: Messages.Message = {
+      type: Messages.MessageType.MINIMIZE,
+    };
+
+    ipc.send(Messages.CHANNEL_NAME, msg);
+  }
+
+  async maximize(): Promise<void> {
+    const msg: Messages.Message = {
+      type: Messages.MessageType.MAXIMIZE,
+    };
+
+    ipc.send(Messages.CHANNEL_NAME, msg);
   }
 }
