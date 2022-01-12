@@ -1,20 +1,26 @@
 {
   "compilerOptions": {
     "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "importHelpers": true,
     "module": "commonjs",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
+    "noUnusedLocals": true,
     "sourceMap": true,
     "baseUrl": ".",
     "outDir": "dist",
+    "pretty": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "experimentalDecorators": true,
+    "suppressImplicitAnyIndexErrors": true,
     "paths": {
       "*": ["node_modules/*"]
     },
-    "jsx": "react"
+    "jsx": "react",
+    "types": ["@types/node", "webpack-env"]
   },
   "include": [
     "src/**/*"

@@ -1,23 +1,18 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Grid, Select, Toolbar } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const styles = makeStyles(({ breakpoints, spacing, palette }: Theme) =>
-  createStyles({
-    root: {
-      minWidth: spacing(28),
-      height: '100vh',
-    },
-    heading: {
-      paddingBottom: spacing(),
-    },
-    buttonToolbar: {
-      minHeight: spacing(),
-    },
-    editor: {
-      height: '100%',
-      width: '100%',
-    },
-  })
-);
+export const ValueContainer = styled(Grid)(({ theme: { spacing } }) => ({
+  minWidth: spacing(28),
+  height: '100vh',
+}));
 
-export default styles;
+export const ButtonToolbar = styled(Toolbar)(({ theme: { spacing } }) => ({
+  minHeight: spacing(),
+}));
+
+export const LanguageSelector = styled(Select)(({ theme: { spacing } }) => ({
+  marginLeft: spacing(),
+  '& .MuiSelect-select': {
+    padding: spacing(1, 4, 1, 1),
+  },
+}));

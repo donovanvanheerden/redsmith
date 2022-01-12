@@ -1,11 +1,4 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import React from 'react';
 
 interface Props {
@@ -17,12 +10,7 @@ interface Props {
   onConfirm: (newName: string) => void;
 }
 
-const RenameKey = ({
-  title,
-  oldName,
-  onConfirm,
-  ...modalProps
-}: Props): JSX.Element => {
+const RenameKey = ({ title, oldName, onConfirm, ...modalProps }: Props): JSX.Element => {
   const [newName, setName] = React.useState(oldName);
 
   const handleChange = (event: React.ChangeEvent<{ value: string }>) => {
@@ -34,16 +22,16 @@ const RenameKey = ({
   const handleConfirm = () => onConfirm(newName);
 
   return (
-    <Dialog {...modalProps}>
+    <Dialog {...modalProps} fullWidth maxWidth="xs">
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <TextField onChange={handleChange} value={newName} />
+        <TextField fullWidth onChange={handleChange} value={newName} />
       </DialogContent>
       <DialogActions>
         <Button variant="text" onClick={modalProps.onClose}>
           Cancel
         </Button>
-        <Button color="secondary" variant="contained" onClick={handleConfirm}>
+        <Button color="primary" variant="contained" onClick={handleConfirm}>
           Confirm
         </Button>
       </DialogActions>

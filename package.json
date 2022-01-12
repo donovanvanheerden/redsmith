@@ -1,7 +1,7 @@
 {
-  "name": "redily-clone",
-  "productName": "redily-clone",
-  "version": "1.0.0",
+  "name": "redsmith",
+  "productName": "redsmith",
+  "version": "0.1.0",
   "description": "Redis GUI Client, clone of Redily",
   "main": ".webpack/main",
   "scripts": {
@@ -9,6 +9,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
+    "publish:win": "electron-forge publish --arch=ia32,x64 --platform=win32",
     "lint": "eslint --ext .ts,.tsx ."
   },
   "keywords": [],
@@ -24,7 +25,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "redily_clone"
+            "name": "redsmith"
           }
         },
         {
@@ -58,48 +59,72 @@
                     "js": "./src/preload.ts"
                   }
                 }
-              ]
+              ],
+              "resolve": {
+                "alias": {
+                  "src": "./src"
+                }
+              }
             }
           }
         ]
-      ]
+      ],
+      "publishers": {
+        "name": "@electron-forge/publisher-github",
+        "config": {
+          "repository": {
+            "owner": "donovanvanheerden",
+            "name": "redsmith"
+          }
+        }
+      }
     }
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.60",
-    "@electron-forge/maker-deb": "^6.0.0-beta.60",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.60",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.60",
-    "@electron-forge/maker-zip": "^6.0.0-beta.60",
-    "@electron-forge/plugin-webpack": "6.0.0-beta.60",
-    "@types/ioredis": "^4.26.7",
-    "@types/react": "^17.0.18",
-    "@types/react-dom": "^17.0.9",
-    "@typescript-eslint/eslint-plugin": "^4.0.1",
-    "@typescript-eslint/parser": "^4.0.1",
-    "@vercel/webpack-asset-relocator-loader": "1.6.0",
-    "css-loader": "^6.0.0",
-    "electron": "13.3.0",
-    "eslint": "^7.6.0",
-    "eslint-plugin-import": "^2.20.0",
-    "fork-ts-checker-webpack-plugin": "^6.0.1",
+    "@electron-forge/cli": "6.0.0-beta.63",
+    "@electron-forge/maker-deb": "6.0.0-beta.63",
+    "@electron-forge/maker-rpm": "6.0.0-beta.63",
+    "@electron-forge/maker-squirrel": "6.0.0-beta.63",
+    "@electron-forge/maker-zip": "6.0.0-beta.63",
+    "@electron-forge/plugin-webpack": "6.0.0-beta.63",
+    "@electron-forge/publisher-github": "^6.0.0-beta.63",
+    "@types/ioredis": "^4.28.1",
+    "@types/node": "^16.11.9",
+    "@types/react": "^17.0.34",
+    "@types/react-dom": "^17.0.11",
+    "@types/webpack-env": "^1.16.3",
+    "@typescript-eslint/eslint-plugin": "^5.3.0",
+    "@typescript-eslint/parser": "^5.3.0",
+    "@vercel/webpack-asset-relocator-loader": "1.7.0",
+    "css-loader": "^6.5.1",
+    "electron": "15.3.0",
+    "eslint": "^8.2.0",
+    "eslint-plugin-import": "^2.25.2",
+    "fork-ts-checker-webpack-plugin": "^6.4.0",
     "node-loader": "^2.0.0",
-    "style-loader": "^3.0.0",
-    "ts-loader": "^9.2.2",
-    "typescript": "^4.0.2"
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.4.4"
   },
   "dependencies": {
-    "@material-ui/core": "^4.12.3",
-    "@material-ui/icons": "^4.11.2",
-    "@reduxjs/toolkit": "^1.6.1",
+    "@babel/core": "^7.16.0",
+    "@emotion/react": "^11.5.0",
+    "@emotion/styled": "^11.3.0",
+    "@fontsource/roboto": "^4.5.1",
+    "@mui/icons-material": "^5.2.5",
+    "@mui/material": "^5.0.6",
+    "@reduxjs/toolkit": "^1.6.2",
+    "clsx": "^1.1.1",
     "electron-squirrel-startup": "^1.0.0",
-    "inversify": "^5.1.1",
-    "ioredis": "^4.27.8",
-    "monaco-editor": "^0.27.0",
-    "monaco-editor-webpack-plugin": "^4.1.2",
+    "electron-store": "^8.0.1",
+    "inversify": "^6.0.1",
+    "ioredis": "^4.28.0",
+    "monaco-editor": "^0.30.0",
+    "monaco-editor-webpack-plugin": "^6.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-redux": "^7.2.5",
+    "react-redux": "^7.2.6",
+    "react-virtuoso": "^2.4.0",
     "reflect-metadata": "^0.1.13"
   }
 }

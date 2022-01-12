@@ -20,3 +20,15 @@ export interface DbInfo {
    */
   avgTtl: number;
 }
+
+export interface Connection {
+  name: string;
+  host: string;
+  port: number;
+  password: string;
+}
+
+export interface Settings {
+  autoFormat: boolean;
+  preferredLanguage: 'json' | 'text' | 'xml';
+}

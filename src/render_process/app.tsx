@@ -1,37 +1,48 @@
 import 'reflect-metadata';
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 
-import { createTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
+import { CssBaseline, ThemeProvider, StyledEngineProvider } from '@mui/material';
+
+import { darkTheme } from './globals/theme';
+
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import Main from './pages/Main';
 import { diContext } from './infra/diContext';
 import { Container } from 'inversify';
 import WebIpc, { IWebIpc } from './infra/WebIpc';
 
 import { Provider } from 'react-redux';
-import { configureStore } from './store';
-
-const theme = createTheme();
+import { createStore } from './store';
+import { Layout } from './components/layout';
 
 const container = new Container();
 
 container.bind<IWebIpc>(WebIpc).to(WebIpc).inSingletonScope();
 
-const store = configureStore();
+const store = createStore();
 
-const App = () => (
-  <Provider store={store}>
-    <ThemeProvider theme={theme}>
-      <diContext.Provider value={container}>
-        <CssBaseline />
-        <Main />
-      </diContext.Provider>
-    </ThemeProvider>
-  </Provider>
-);
+const App = () => {
+  const [theme] = React.useState(darkTheme);
 
-function render() {
-  ReactDOM.render(<App />, document.getElementById('app'));
+  return (
+    <Provider store={store}>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <diContext.Provider value={container}>
+            <CssBaseline />
+            <Layout />
+          </diContext.Provider>
+        </ThemeProvider>
+      </StyledEngineProvider>
+    </Provider>
+  );
+};
+
+ReactDOM.render(<App />, document.getElementById('app'));
+
+if (module.hot) {
+  module.hot.accept();
 }
-
-render();

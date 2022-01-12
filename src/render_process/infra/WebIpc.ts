@@ -1,11 +1,17 @@
 import { injectable } from 'inversify';
-import { DbInfo } from '../../core/interfaces';
+import { Connection, DbInfo, Settings } from '../../core/interfaces';
 import * as Messages from '../../core/WindowMessages';
 import { ConnectionOptions } from '../globals/interfaces';
 
 const ipc = window.ipc;
 
 export interface IWebIpc {
+  getConnections: () => Promise<Connection[]>;
+  /**
+   * Deletes a saved connection using the connection name provided
+   * @param name Connection Name
+   */
+  deleteConnection: (name: string) => Promise<void>;
   /**
    * Creates a connection to redis using provided connection options.
    *
@@ -19,6 +25,13 @@ export interface IWebIpc {
    * @returns keys for selected Redis Db
    */
   switchDb: (db: DbInfo) => Promise<string[]>;
+
+  /**
+   * Returns keys matching search param
+   * @param searchParam Search value to find matching keys
+   * @returns keys for search param
+   */
+  getKeys: (searchParam: string) => Promise<string[]>;
 
   /**
    * Returns value for key
@@ -49,6 +62,20 @@ export interface IWebIpc {
    * @param seconds timeout in seconds for key to expire
    */
   setKeyExpiry: (key: string, seconds: number) => Promise<void>;
+  /**
+   * Gets settings saved in store
+   */
+  getSettings: () => Promise<Settings>;
+  /**
+   * Saves settings
+   * @param settings Settings Object from redux store
+   */
+  saveSettings: (settings: Settings) => Promise<void>;
+
+  // window controls
+  close: () => void;
+  minimize: () => void;
+  maximize: () => void;
 }
 
 @injectable()
@@ -68,12 +95,20 @@ export default class WebIpc implements IWebIpc {
       db,
     };
 
-    const response = await ipc.sendAsync<Messages.DbSwitched>(
-      Messages.CHANNEL_NAME,
-      msg
-    );
+    const response = await ipc.sendAsync<Messages.DbSwitched>(Messages.CHANNEL_NAME, msg);
 
     return response.keys;
+  }
+
+  async getKeys(searchParam: string): Promise<string[]> {
+    const msg: Messages.GetKeys = {
+      type: Messages.MessageType.GET_KEYS,
+      searchPattern: searchParam,
+    };
+
+    const response = await ipc.sendAsync<Messages.GetKeys>(Messages.CHANNEL_NAME, msg);
+
+    return response.keys || [];
   }
 
   async getValue(key: string): Promise<Messages.GetStringValue> {
@@ -122,5 +157,67 @@ export default class WebIpc implements IWebIpc {
     };
 
     await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
+  }
+
+  async getConnections(): Promise<Connection[]> {
+    const msg: Messages.Message = {
+      type: Messages.MessageType.GET_CONNECTIONS,
+    };
+
+    const response = await ipc.sendAsync<Messages.GetConnections>(Messages.CHANNEL_NAME, msg);
+
+    return response.connections;
+  }
+
+  async deleteConnection(name: string): Promise<void> {
+    const msg: Messages.DeleteConnection = {
+      type: Messages.MessageType.DELETE_CONNECTION,
+      name,
+    };
+
+    return await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
+  }
+
+  async getSettings(): Promise<Settings> {
+    const msg: Messages.GetSettings = {
+      type: Messages.MessageType.GET_SETTINGS,
+    } as Messages.GetSettings;
+
+    const response: Messages.GetSettings = await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
+
+    return response.settings;
+  }
+
+  async saveSettings(settings: Settings): Promise<void> {
+    const msg: Messages.SaveSettings = {
+      type: Messages.MessageType.SAVE_SETTINGS,
+      settings,
+    };
+
+    return await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
+  }
+
+  async close(): Promise<void> {
+    const msg: Messages.Message = {
+      type: Messages.MessageType.CLOSE,
+    };
+
+    ipc.send(Messages.CHANNEL_NAME, msg);
+  }
+
+  async minimize(): Promise<void> {
+    const msg: Messages.Message = {
+      type: Messages.MessageType.MINIMIZE,
+    };
+
+    ipc.send(Messages.CHANNEL_NAME, msg);
+  }
+
+  async maximize(): Promise<void> {
+    const msg: Messages.Message = {
+      type: Messages.MessageType.MAXIMIZE,
+    };
+
+    ipc.send(Messages.CHANNEL_NAME, msg);
   }
 }

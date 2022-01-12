@@ -1,9 +1,11 @@
-import { DbInfo } from './interfaces';
+import { Connection, DbInfo, Settings } from './interfaces';
 
 export const CHANNEL_NAME = 'async-message';
 
 export enum MessageType {
+  GET_CONNECTIONS,
   CREATE_CONNECTION,
+  DELETE_CONNECTION,
   CONNECTED,
   SWITCH_DB,
   DB_SWITCHED,
@@ -13,10 +15,20 @@ export enum MessageType {
   RENAME_KEY,
   SET_KEY_EXPIRY,
   ERROR,
+  GET_SETTINGS,
+  SAVE_SETTINGS,
+  GET_KEYS,
+  MINIMIZE,
+  MAXIMIZE,
+  CLOSE,
 }
 
 export interface Message {
   type: MessageType;
+}
+
+export interface GetConnections extends Message {
+  connections: Connection[];
 }
 
 export interface CreateConnection extends Message {
@@ -26,10 +38,15 @@ export interface CreateConnection extends Message {
   password?: string;
 }
 
+export interface DeleteConnection extends Message {
+  name: string;
+}
+
 export interface Connected extends Message {
   dbs: DbInfo[];
   keys: string[];
   selectedDb: number;
+  name: string;
 }
 
 export interface SwitchDb extends Message {
@@ -38,6 +55,11 @@ export interface SwitchDb extends Message {
 
 export interface DbSwitched extends Message {
   keys: string[];
+}
+
+export interface GetKeys extends Message {
+  searchPattern: string;
+  keys?: string[];
 }
 
 export interface GetStringValue extends Message {
@@ -65,4 +87,12 @@ export interface SetKeyExpiry extends Message {
 }
 export interface ErrorMessage extends Message {
   message: string;
+}
+
+export interface GetSettings extends Message {
+  settings: Settings;
+}
+
+export interface SaveSettings extends Message {
+  settings: Settings;
 }

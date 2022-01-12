@@ -1,11 +1,4 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import React from 'react';
 
 interface Props {
@@ -33,20 +26,16 @@ const ExpireKey = ({ title, onConfirm, ...modalProps }: Props): JSX.Element => {
   };
 
   return (
-    <Dialog {...modalProps}>
+    <Dialog {...modalProps} fullWidth maxWidth="xs">
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <TextField
-          onChange={handleChange}
-          placeholder="Expiry in Seconds"
-          value={expiry}
-        />
+        <TextField fullWidth onChange={handleChange} placeholder="Expiry in Seconds" value={expiry} />
       </DialogContent>
       <DialogActions>
         <Button variant="text" onClick={modalProps.onClose}>
           Cancel
         </Button>
-        <Button color="secondary" variant="contained" onClick={handleConfirm}>
+        <Button color="primary" variant="contained" onClick={handleConfirm}>
           Confirm
         </Button>
       </DialogActions>

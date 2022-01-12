@@ -1,36 +1,29 @@
-import { Grid } from "@material-ui/core";
-import React, { Fragment } from "react";
+import { Grid } from '@mui/material';
+import React from 'react';
 
-import { KeyList } from "../keyList";
-import { SideNav } from "../sideNav";
-import { ValueDetail } from "../valueDetail";
+import TitleBar from '../titleBar/titleBar';
 
-import useStyles from "./layout.styles";
-import { RootState } from "../../store";
-import { useDispatch, useSelector } from "react-redux";
-import { Form } from "../form";
+import { KeysPanel } from '../keysPanel';
 
-import { formActions } from '../../store/reducers/form-slice';
+import { ValueDetail } from '../valueDetail';
 
-interface FormState {
-  showConnForm: boolean;
-}
+import { Root } from './layout.styles';
 
-const Layout = (): JSX.Element => {
-  const classes = useStyles();
+import { ConnectionBar } from '../connectionBar';
+import { DbSelector } from '../dbSelector';
 
-  return (
-    <React.Fragment>
-      <Form />
-      <div className={classes.root}>
-        <SideNav />
-        <Grid className={classes.content} container>
-          <KeyList />
-          <ValueDetail />
-        </Grid>
-      </div>
-    </React.Fragment>
-  );
-};
+const Layout = (): JSX.Element => (
+  <React.Fragment>
+    <TitleBar />
+    <Root>
+      <ConnectionBar />
+      <DbSelector />
+      <Grid container>
+        <KeysPanel />
+        <ValueDetail />
+      </Grid>
+    </Root>
+  </React.Fragment>
+);
 
 export default Layout;
