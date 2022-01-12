@@ -5,3 +5,11 @@ body {
 ::placeholder {
   color: #fff !important;
 }
+
+#titlebar {
+  -webkit-app-region: drag;
+}
+
+#window-controls {
+  -webkit-app-region: no-drag;
+}

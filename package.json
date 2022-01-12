@@ -1,7 +1,7 @@
 {
   "name": "redsmith",
   "productName": "redsmith",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Redis GUI Client, clone of Redily",
   "main": ".webpack/main",
   "scripts": {
@@ -99,6 +99,7 @@
     "@babel/core": "^7.16.0",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
+    "@fontsource/roboto": "^4.5.1",
     "@mui/icons-material": "^5.2.5",
     "@mui/material": "^5.0.6",
     "@reduxjs/toolkit": "^1.6.2",
