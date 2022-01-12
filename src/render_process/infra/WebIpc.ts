@@ -27,6 +27,13 @@ export interface IWebIpc {
   switchDb: (db: DbInfo) => Promise<string[]>;
 
   /**
+   * Returns keys matching search param
+   * @param searchParam Search value to find matching keys
+   * @returns keys for search param
+   */
+  getKeys: (searchParam: string) => Promise<string[]>;
+
+  /**
    * Returns value for key
    * @param key string representation for redisKey
    * @returns value for redis key
@@ -86,6 +93,17 @@ export default class WebIpc implements IWebIpc {
     const response = await ipc.sendAsync<Messages.DbSwitched>(Messages.CHANNEL_NAME, msg);
 
     return response.keys;
+  }
+
+  async getKeys(searchParam: string): Promise<string[]> {
+    const msg: Messages.GetKeys = {
+      type: Messages.MessageType.GET_KEYS,
+      searchPattern: searchParam,
+    };
+
+    const response = await ipc.sendAsync<Messages.GetKeys>(Messages.CHANNEL_NAME, msg);
+
+    return response.keys || [];
   }
 
   async getValue(key: string): Promise<Messages.GetStringValue> {

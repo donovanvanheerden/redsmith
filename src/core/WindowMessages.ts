@@ -17,6 +17,7 @@ export enum MessageType {
   ERROR,
   GET_SETTINGS,
   SAVE_SETTINGS,
+  GET_KEYS,
 }
 
 export interface Message {
@@ -51,6 +52,11 @@ export interface SwitchDb extends Message {
 
 export interface DbSwitched extends Message {
   keys: string[];
+}
+
+export interface GetKeys extends Message {
+  searchPattern: string;
+  keys?: string[];
 }
 
 export interface GetStringValue extends Message {
