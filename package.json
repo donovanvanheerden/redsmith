@@ -69,16 +69,18 @@
           }
         ]
       ],
-      "publishers": {
-        "name": "@electron-forge/publisher-github",
-        "config": {
-          "repository": {
-            "owner": "donovanvanheerden",
-            "name": "redsmith",
-            "draft": true
+      "publishers": [
+        {
+          "name": "@electron-forge/publisher-github",
+          "config": {
+            "repository": {
+              "owner": "donovanvanheerden",
+              "name": "redsmith",
+              "draft": true
+            }
           }
         }
-      }
+      ]
     }
   },
   "devDependencies": {
