@@ -74,10 +74,10 @@
         "config": {
           "repository": {
             "owner": "donovanvanheerden",
-            "name": "redsmith"
+            "name": "redsmith",
+            "draft": true
           }
-        },
-        "draft": true
+        }
       }
     }
   },
