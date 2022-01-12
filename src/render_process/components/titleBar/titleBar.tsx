@@ -15,16 +15,16 @@ const TitleBar = () => {
   const handleMinimize = () => ipc.minimize();
 
   return (
-    <Root>
+    <Root id="titlebar">
       <Title>Redsmith</Title>
-      <WindowControls>
-        <WindowButton onClick={handleMinimize}>
+      <WindowControls id="window-controls">
+        <WindowButton disableRipple onClick={handleMinimize}>
           <HorizontalRuleOutlinedIcon />
         </WindowButton>
-        <WindowButton onClick={handleMaximize}>
+        <WindowButton disableRipple onClick={handleMaximize}>
           <SquareOutlinedIcon />
         </WindowButton>
-        <WindowButton color="error" onClick={handleClose}>
+        <WindowButton disableRipple onClick={handleClose}>
           <CloseIcon />
         </WindowButton>
       </WindowControls>

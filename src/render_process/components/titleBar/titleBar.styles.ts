@@ -4,7 +4,6 @@ export const Root = styled('div')(({ theme: { palette, spacing } }) => ({
   height: spacing(4),
   position: 'relative',
   backgroundColor: palette.grey[900],
-  '-webkit-app-region': 'drag',
 }));
 
 export const Title = styled(Typography)(({ theme: { palette, spacing } }) => ({
@@ -20,13 +19,15 @@ export const WindowControls = styled('div')(() => ({
   top: 0,
   right: 0,
   position: 'absolute',
-  '-webkit-app-region': 'no-drag',
 }));
 
 export const WindowButton = styled(IconButton)(({ theme: { palette, spacing } }) => ({
   borderRadius: 0,
   padding: spacing(0.75),
   color: alpha(palette.common.white, 0.4),
+  [`&:hover:last-of-type`]: {
+    backgroundColor: palette.error.main,
+  },
   [`&:hover`]: {
     backgroundColor: alpha(palette.common.white, 0.2),
     color: alpha(palette.common.white, 0.8),
