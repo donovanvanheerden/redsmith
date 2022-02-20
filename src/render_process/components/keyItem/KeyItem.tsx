@@ -14,15 +14,6 @@ const useUtilityClasses = ({ classes, selected }: Pick<Props, 'classes' | 'selec
   return composeClasses(slots, getRedKeyItemUtilityClass, classes);
 };
 
-// index: number;
-// style: CSSProperties;
-// data: T;
-// isScrolling?: boolean | undefined;
-
-interface SelectedState {
-  // redisKey: string;
-  selectedKey: string;
-}
 interface Props {
   index: number;
   data: string;
@@ -33,21 +24,22 @@ interface Props {
 const KeyItem = (compProps: Props) => {
   const ipc = useIpc();
 
-  const { selectedKey } = useAppSelector<SelectedState>((state) => ({
-    // redisKey: state.redis.keys[compProps.index],
-    selectedKey: state.redis.selectedKey,
-  }));
+  const isSelected = useAppSelector<boolean>((state) => (state.redis.selectedKeys || []).includes(compProps.data));
 
   const dispatch = useAppDispatch();
   const props = useThemeProps({ props: compProps, name: 'RedKeyItem' });
 
-  const handleKeySelection = async () => {
-    const { value } = await ipc.getValue(props.data);
+  const handleKeySelection = async (event: React.MouseEvent) => {
+    if (event.ctrlKey) {
+      dispatch(redisActions.addRedisKeySelection({ key: props.data }));
+    } else {
+      const { value } = await ipc.getValue(props.data);
 
-    dispatch(redisActions.setRedisKeySelection({ key: props.data, value }));
+      dispatch(redisActions.setRedisKeySelection({ key: props.data, value }));
+    }
   };
 
-  const classes = useUtilityClasses({ ...props, selected: props.data === selectedKey });
+  const classes = useUtilityClasses({ ...props, selected: isSelected });
 
   return (
     <KeyRoot className={classes.root} onClick={handleKeySelection}>
