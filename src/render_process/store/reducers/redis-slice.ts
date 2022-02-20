@@ -32,6 +32,9 @@ export const redisSlice = createSlice({
     setOnConnected: (_, action: PayloadAction<RedisState>) => {
       return action.payload;
     },
+    disconnect: () => {
+      return initialState;
+    },
     switchDb: (state, action: PayloadAction<SwitchDb>) => {
       const dbs = [...state.dbs];
       const idx = dbs.findIndex((d) => d.index === action.payload.selectedDb);
@@ -119,13 +122,24 @@ export const redisSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(connectionActions.deleteConnection.type, (state, action: PayloadAction<Connection>) => {
-      if (state.name === action.payload.name) {
-        return initialState;
-      }
+    builder
+      .addCase(connectionActions.deleteConnection.type, (state, action: PayloadAction<Connection>) => {
+        if (state.name === action.payload.name) {
+          return initialState;
+        }
 
-      return state;
-    });
+        return state;
+      })
+      .addCase(
+        connectionActions.editConnection.type,
+        (state, action: PayloadAction<{ old: Connection; new: Connection }>) => {
+          if (state.name === action.payload.old.name) {
+            return { ...state, name: action.payload.new.name };
+          }
+
+          return state;
+        },
+      );
   },
 });
 

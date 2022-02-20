@@ -6,7 +6,20 @@ import { ConnectionOptions } from '../globals/interfaces';
 const ipc = window.ipc;
 
 export interface IWebIpc {
+  /**
+   * Disconnects from redis server
+   */
+  disconnect: () => Promise<void>;
+  /**
+   * Gets saved connections
+   */
   getConnections: () => Promise<Connection[]>;
+  /**
+   * Edits an existing connection
+   * @param oldName old connection name
+   * @param connection new connection object
+   */
+  editConnection: (oldName: string, connection: Connection) => Promise<void>;
   /**
    * Deletes a saved connection using the connection name provided
    * @param name Connection Name
@@ -89,6 +102,14 @@ export default class WebIpc implements IWebIpc {
     return await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
   }
 
+  async disconnect(): Promise<void> {
+    const msg: Messages.Message = {
+      type: Messages.MessageType.DISCONNECT,
+    };
+
+    await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
+  }
+
   async switchDb(db: DbInfo): Promise<string[]> {
     const msg: Messages.SwitchDb = {
       type: Messages.MessageType.SWITCH_DB,
@@ -167,6 +188,16 @@ export default class WebIpc implements IWebIpc {
     const response = await ipc.sendAsync<Messages.GetConnections>(Messages.CHANNEL_NAME, msg);
 
     return response.connections;
+  }
+
+  async editConnection(oldName: string, connection: Connection): Promise<void> {
+    const msg: Messages.EditConnection = {
+      type: Messages.MessageType.EDIT_CONNECTION,
+      oldName,
+      ...connection,
+    };
+
+    return await ipc.sendAsync(Messages.CHANNEL_NAME, msg);
   }
 
   async deleteConnection(name: string): Promise<void> {

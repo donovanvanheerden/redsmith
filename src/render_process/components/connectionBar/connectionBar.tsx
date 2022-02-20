@@ -39,7 +39,7 @@ const ConnectionBar = () => {
 
   const ipc = useIpc();
 
-  const { handleShow, NewConnection } = useNewConnectionModal();
+  const { handleEdit, handleShow, NewConnection } = useNewConnectionModal();
 
   const { handleOpen, Settings } = useSettingsModal();
 
@@ -94,12 +94,19 @@ const ConnectionBar = () => {
     }
   };
 
-  const handleDisconnect = () => {
-    console.log('I need to implement disconnecting from: ', contextMenu.connection.name);
+  const handleDisconnect = async () => {
+    await ipc.disconnect();
+
+    dispatch(redisActions.disconnect());
+
+    setContextMenu(null);
   };
 
-  const handleEditConnection = () => {
-    console.log('I need to implement editing connection: ', contextMenu.connection.name);
+  const handleEditConnection = async () => {
+    setContextMenu(null);
+
+    await handleEdit(contextMenu.connection);
+    // console.log('I need to implement editing connection: ', contextMenu.connection.name);
   };
 
   const handleClose = () => {
@@ -133,7 +140,7 @@ const ConnectionBar = () => {
         anchorReference="anchorPosition"
         anchorPosition={contextMenu !== null ? { top: contextMenu.mouseY, left: contextMenu.mouseX } : undefined}
       >
-        <MenuItem onClick={handleDisconnect}>Disconnect</MenuItem>
+        {contextMenu?.connection?.name === connectionName && <MenuItem onClick={handleDisconnect}>Disconnect</MenuItem>}
         <MenuItem onClick={handleEditConnection}>Edit</MenuItem>
         <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </Menu>

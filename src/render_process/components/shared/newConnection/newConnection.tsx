@@ -15,6 +15,10 @@ import { useAppDispatch } from '../../../hooks';
 
 import { RedTextField } from './newConnection.styles';
 
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { IconButton } from '@mui/material';
+
 interface AlertMessage {
   open: boolean;
   message: string;
@@ -22,13 +26,15 @@ interface AlertMessage {
 }
 
 interface Props {
+  connection?: Connection;
   open: boolean;
   onClose: () => void;
 }
 
-const NewConnection = ({ open, onClose }: Props) => {
-  const [alert, setAlert] = React.useState<AlertMessage>(null);
+const NewConnection = ({ connection, open, onClose }: Props) => {
+  const [alert, setAlert] = useState<AlertMessage>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showPassword, setShowPassword] = useState(false);
 
   const ipc = useIpc();
 
@@ -54,17 +60,22 @@ const NewConnection = ({ open, onClose }: Props) => {
     }
 
     try {
-      const connection: Connection = {
+      const conn: Connection = {
         host: formData.get('host').toString(),
         name: formData.get('name').toString(),
         port: parseInt(formData.get('port').toString()),
         password: formData.get('password').toString(),
       };
 
-      const response = await ipc.connect(connection);
+      if (connection) {
+        await ipc.editConnection(connection.name, conn);
+        dispatch(connectionActions.editConnection({ old: connection, new: conn }));
+      } else {
+        const response = await ipc.connect(conn);
 
-      dispatch(connectionActions.addConnection(connection));
-      dispatch(redisActions.setOnConnected(response));
+        dispatch(connectionActions.addConnection(conn));
+        dispatch(redisActions.setOnConnected(response));
+      }
     } catch (ex) {
       console.log(ex);
 
@@ -95,6 +106,7 @@ const NewConnection = ({ open, onClose }: Props) => {
               label="Name"
               size="small"
               error={Boolean(errors['name'])}
+              defaultValue={connection?.name}
               helperText={errors['name']}
               fullWidth
               placeholder="Development Server"
@@ -115,6 +127,7 @@ const NewConnection = ({ open, onClose }: Props) => {
                 }}
                 error={Boolean(errors['host'])}
                 helperText={errors['host']}
+                defaultValue={connection?.host}
               />
               <RedTextField
                 name="port"
@@ -127,6 +140,7 @@ const NewConnection = ({ open, onClose }: Props) => {
                   shrink: true,
                 }}
                 error={Boolean(errors['port'])}
+                defaultValue={connection?.port}
                 helperText={errors['port']}
                 sx={{ marginLeft: 0.5, width: 96 }}
               />
@@ -136,10 +150,18 @@ const NewConnection = ({ open, onClose }: Props) => {
               name="password"
               variant="filled"
               label="Password"
+              InputProps={{
+                endAdornment: (
+                  <IconButton color="inherit" onClick={() => setShowPassword((sp) => !sp)}>
+                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                  </IconButton>
+                ),
+              }}
               size="small"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               error={Boolean(errors['password'])}
               helperText={errors['password']}
+              defaultValue={connection?.password}
               fullWidth
             />
             <br />
