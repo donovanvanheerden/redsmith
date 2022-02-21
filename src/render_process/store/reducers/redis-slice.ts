@@ -6,7 +6,7 @@ interface RedisState {
   dbs: DbInfo[];
   selectedDb: number;
   keys: string[];
-  selectedKey?: string;
+  selectedKeys?: string[];
   value?: string;
   name?: string;
 }
@@ -15,7 +15,7 @@ const initialState: RedisState = {
   dbs: [],
   selectedDb: 0,
   keys: [],
-  selectedKey: null,
+  selectedKeys: [],
   value: null,
   name: null,
 };
@@ -31,6 +31,9 @@ export const redisSlice = createSlice({
   reducers: {
     setOnConnected: (_, action: PayloadAction<RedisState>) => {
       return action.payload;
+    },
+    disconnect: () => {
+      return initialState;
     },
     switchDb: (state, action: PayloadAction<SwitchDb>) => {
       const dbs = [...state.dbs];
@@ -48,13 +51,16 @@ export const redisSlice = createSlice({
         ...action.payload,
       };
     },
-    setRedisKeySelection: (
-      state,
-      action: PayloadAction<{ key: string; value: string }>
-    ) => {
+    addRedisKeySelection: (state, action: PayloadAction<{ key: string }>) => {
       return {
         ...state,
-        selectedKey: action.payload.key,
+        selectedKeys: [...state.selectedKeys, action.payload.key],
+      };
+    },
+    setRedisKeySelection: (state, action: PayloadAction<{ key: string; value: string }>) => {
+      return {
+        ...state,
+        selectedKeys: [action.payload.key],
         value: action.payload.value,
       };
     },
@@ -68,8 +74,16 @@ export const redisSlice = createSlice({
         dbs.splice(dIdx, 1, { ...dbs[dIdx], keys: keys.length });
       }
 
-      if (state.selectedKey === action.payload) {
-        return { ...state, dbs, keys, selectedKey: null, value: null };
+      if (state.selectedKeys.includes(action.payload)) {
+        const value = state.selectedKeys.length === 1 ? null : state.value;
+
+        return {
+          ...state,
+          dbs,
+          keys,
+          selectedKeys: [...state.selectedKeys.filter((k) => k !== action.payload)],
+          value,
+        };
       }
 
       return { ...state, dbs, keys };
@@ -80,10 +94,7 @@ export const redisSlice = createSlice({
         keys: action.payload,
       };
     },
-    renameKey: (
-      state,
-      action: PayloadAction<{ oldName: string; newName: string }>
-    ) => {
+    renameKey: (state, action: PayloadAction<{ oldName: string; newName: string }>) => {
       const { oldName, newName } = action.payload;
 
       const keyIdx = state.keys.findIndex((k) => k === oldName);
@@ -92,10 +103,14 @@ export const redisSlice = createSlice({
 
       modifiedKeys.splice(keyIdx, 1, newName);
 
-      if (state.selectedKey === oldName) {
+      if (state.selectedKeys.includes(oldName)) {
+        const selectedKeys = [...state.selectedKeys];
+        const idx = selectedKeys.findIndex((s) => s === oldName);
+        selectedKeys.splice(idx, 1, newName);
+
         return {
           ...state,
-          selectedKey: newName,
+          selectedKeys,
           keys: modifiedKeys,
         };
       }
@@ -107,16 +122,24 @@ export const redisSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(
-      connectionActions.deleteConnection.type,
-      (state, action: PayloadAction<Connection>) => {
+    builder
+      .addCase(connectionActions.deleteConnection.type, (state, action: PayloadAction<Connection>) => {
         if (state.name === action.payload.name) {
           return initialState;
         }
 
         return state;
-      }
-    );
+      })
+      .addCase(
+        connectionActions.editConnection.type,
+        (state, action: PayloadAction<{ old: Connection; new: Connection }>) => {
+          if (state.name === action.payload.old.name) {
+            return { ...state, name: action.payload.new.name };
+          }
+
+          return state;
+        },
+      );
   },
 });
 

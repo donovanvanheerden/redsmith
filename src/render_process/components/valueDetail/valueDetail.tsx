@@ -43,12 +43,18 @@ const ValueDetail = (props: Props): JSX.Element => {
     key: redisKey,
     hasConnection,
     settings,
-  } = useAppSelector<SelectorState>((state) => ({
-    key: state.redis.selectedKey,
-    value: state.redis.value || '',
-    hasConnection: Boolean(state.redis.name),
-    settings: state.settings,
-  }));
+  } = useAppSelector<SelectorState>((state) => {
+    const oneKey = (state.redis.selectedKeys || []).length === 1;
+
+    const key = oneKey ? state.redis.selectedKeys[0] : null;
+
+    return {
+      key,
+      value: state.redis.value || '',
+      hasConnection: Boolean(state.redis.name),
+      settings: state.settings,
+    };
+  });
 
   // const [canSave, setCanSave] = React.useState(false);
 

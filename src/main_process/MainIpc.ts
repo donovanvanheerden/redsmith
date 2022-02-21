@@ -32,6 +32,9 @@ export class MainIpc implements IMainIpc {
         case Messages.MessageType.CREATE_CONNECTION:
           reply = await this._handleCreateConnection(<Messages.CreateConnection>message);
           break;
+        case Messages.MessageType.EDIT_CONNECTION:
+          reply = await this._handleEditConnection(<Messages.EditConnection>message);
+          break;
         case Messages.MessageType.DELETE_CONNECTION:
           await this._handleDeleteConnection(<Messages.DeleteConnection>message);
           break;
@@ -61,6 +64,9 @@ export class MainIpc implements IMainIpc {
           break;
         case Messages.MessageType.GET_SETTINGS:
           reply = await this._handleGetSettings();
+          break;
+        case Messages.MessageType.DISCONNECT:
+          reply = await this._handleDisconnect();
           break;
         // Window Controls
         case Messages.MessageType.CLOSE:
@@ -98,6 +104,16 @@ export class MainIpc implements IMainIpc {
     };
 
     return msg;
+  }
+
+  private async _handleDisconnect(): Promise<Messages.Message> {
+    await this.redis.disconnect();
+
+    const message: Messages.Message = {
+      type: Messages.MessageType.DISCONNECT,
+    };
+
+    return message;
   }
 
   private async _handleCreateConnection(message: Messages.CreateConnection): Promise<Messages.Message> {
@@ -139,6 +155,26 @@ export class MainIpc implements IMainIpc {
 
       return Promise.reject(`Unable to connect to ${message.name} (${message.host}:${message.port}).`);
     }
+  }
+
+  private async _handleEditConnection(message: Messages.EditConnection): Promise<Messages.Message> {
+    const connections = Store.get('connections');
+
+    delete connections[message.oldName];
+
+    const connection: Connection = {
+      host: message.host,
+      port: message.port,
+      password: message.password,
+      name: message.name,
+    };
+
+    Store.set('connections', {
+      ...connections,
+      [message.name]: connection,
+    });
+
+    return message;
   }
 
   private async _handleSwitchDb(message: Messages.SwitchDb): Promise<Messages.Message> {

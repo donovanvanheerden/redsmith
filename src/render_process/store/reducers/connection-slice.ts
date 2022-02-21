@@ -19,6 +19,13 @@ export const connectionSlice = createSlice({
     addConnection: (state, action: PayloadAction<Connection>) => {
       return { ...state, [action.payload.name]: action.payload };
     },
+    editConnection: (state, action: PayloadAction<{ old: Connection; new: Connection }>) => {
+      const newState = { ...state };
+
+      delete newState[action.payload.old.name];
+
+      return { ...newState, [action.payload.new.name]: action.payload.new };
+    },
     deleteConnection: (state, action: PayloadAction<Connection>) => {
       const connections = { ...state };
 
