@@ -14,11 +14,20 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
     - uses: actions/setup-node@master
       with:
         node-version: 16
+
+    - name: Set VERSION variable from tag
+      run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+
     - name: install dependencies
       run: yarn
+
+    - name: Set Version
+      run: yarn version --new-version ${VERSION} --no-git-tag-version
+
     - name: publish
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
