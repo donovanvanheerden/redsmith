@@ -2,6 +2,7 @@ import { ipcMain as ipc } from 'electron';
 import { Connection } from '../core/interfaces';
 import { IRedisClient, RedisClient } from '../core/redisClient';
 import Store from '../core/store';
+import log from 'electron-log';
 
 import { getWindow } from './Main';
 
@@ -82,6 +83,8 @@ export class MainIpc implements IMainIpc {
           break;
       }
     } catch (error) {
+      log.error(error);
+
       const err: Messages.ErrorMessage = {
         message: error as string,
         type: Messages.MessageType.ERROR,

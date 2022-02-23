@@ -47,7 +47,15 @@ const createWindow = (): void => {
     alwaysOnTop: true,
   });
 
-  splashWindow.loadFile(path.join('src', 'splash', 'index.html'));
+  let splashPath = path.join(process.cwd(), 'static', 'splash.html');
+
+  if (process.env.NODE_ENV !== 'development') {
+    const baseDir = process.resourcesPath || process.cwd();
+
+    splashPath = path.join(baseDir, 'static', 'splash.html');
+  }
+
+  splashWindow.loadFile(splashPath);
   splashWindow.center();
 
   if (process.env.NODE_ENV === 'development') {
