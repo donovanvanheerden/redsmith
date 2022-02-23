@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import { MainIpc } from './MainIpc';
+import log from 'electron-log';
 
 import electronUpdater from 'update-electron-app';
 
@@ -77,6 +78,7 @@ app.on('ready', () => {
   mainWindow.once('ready-to-show', () => {
     splashWindow.destroy();
     mainWindow.show();
+    log.info('Redsmith has started');
   });
 });
 
