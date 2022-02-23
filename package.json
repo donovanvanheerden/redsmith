@@ -3,6 +3,7 @@
   "productName": "redsmith",
   "version": "0.1.0",
   "description": "Redis GUI Client, clone of Redily",
+  "repository": "https://github.com/donovanvanheerden/redsmith",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
@@ -20,7 +21,10 @@
   "license": "MIT",
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "name": "redsmith",
+        "extraResource": "static"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
@@ -118,6 +122,7 @@
     "@mui/material": "^5.0.6",
     "@reduxjs/toolkit": "^1.6.2",
     "clsx": "^1.1.1",
+    "electron-log": "^4.4.6",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.0.1",
     "inversify": "^6.0.1",
