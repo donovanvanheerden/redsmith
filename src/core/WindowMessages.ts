@@ -37,6 +37,7 @@ export interface CreateConnection extends Message {
   name: string;
   host: string;
   port: number;
+  namespace: string;
   password?: string;
 }
 

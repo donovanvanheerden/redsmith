@@ -14,8 +14,15 @@ const useUtilityClasses = ({ classes, selected }: Pick<Props, 'classes' | 'selec
   return composeClasses(slots, getRedKeyItemUtilityClass, classes);
 };
 
+interface SelectorState {
+  isSelected: boolean;
+  namespaceSearch: string;
+}
+
 interface Props {
   index: number;
+  usingNamespace: boolean;
+  namespace?: string;
   data: string;
   selected?: boolean;
   classes?: Partial<RedKeyItemClasses>;
@@ -24,7 +31,10 @@ interface Props {
 const KeyItem = (compProps: Props) => {
   const ipc = useIpc();
 
-  const isSelected = useAppSelector<boolean>((state) => (state.redis.selectedKeys || []).includes(compProps.data));
+  const { isSelected } = useAppSelector<SelectorState>((state) => ({
+    isSelected: (state.redis.selectedKeys || []).includes(compProps.data),
+    namespaceSearch: state.redis.namespaceSelection,
+  }));
 
   const dispatch = useAppDispatch();
   const props = useThemeProps({ props: compProps, name: 'RedKeyItem' });
@@ -32,6 +42,8 @@ const KeyItem = (compProps: Props) => {
   const handleKeySelection = async (event: React.MouseEvent) => {
     if (event.ctrlKey) {
       dispatch(redisActions.addRedisKeySelection({ key: props.data }));
+    } else if (props.usingNamespace) {
+      dispatch(redisActions.setNamespaceSelection({ namespacePartial: props.data, namespace: props.namespace }));
     } else {
       const { value } = await ipc.getValue(props.data);
 

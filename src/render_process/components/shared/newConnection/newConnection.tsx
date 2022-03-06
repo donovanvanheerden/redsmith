@@ -65,6 +65,7 @@ const NewConnection = ({ connection, open, onClose }: Props) => {
         name: formData.get('name').toString(),
         port: parseInt(formData.get('port').toString()),
         password: formData.get('password').toString(),
+        namespace: formData.get('namespace')?.toString() ?? ':',
       };
 
       if (connection) {
@@ -157,11 +158,26 @@ const NewConnection = ({ connection, open, onClose }: Props) => {
                   </IconButton>
                 ),
               }}
+              InputLabelProps={{
+                shrink: true,
+              }}
               size="small"
               type={showPassword ? 'text' : 'password'}
               error={Boolean(errors['password'])}
               helperText={errors['password']}
               defaultValue={connection?.password}
+              fullWidth
+            />
+            <RedTextField
+              id="Namespace"
+              name="namespace"
+              variant="filled"
+              label="Namespace"
+              size="small"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              defaultValue={connection?.namespace ?? ':'}
               fullWidth
             />
             <br />

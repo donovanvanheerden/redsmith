@@ -135,6 +135,7 @@ export class MainIpc implements IMainIpc {
         port: message.port,
         password: message.password,
         name: message.name,
+        namespace: message.namespace,
       };
 
       const connections = Store.get('connections');
@@ -170,6 +171,7 @@ export class MainIpc implements IMainIpc {
       port: message.port,
       password: message.password,
       name: message.name,
+      namespace: message.namespace,
     };
 
     Store.set('connections', {

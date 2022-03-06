@@ -4,6 +4,10 @@ export interface ConnectionOptions {
    */
   name: string;
   /**
+   * The namespace for the redis connection, defaults to ":"
+   */
+  namespace: string;
+  /**
    * The hostname for the connection
    */
   host: string;

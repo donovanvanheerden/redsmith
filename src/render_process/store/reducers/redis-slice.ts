@@ -9,6 +9,7 @@ interface RedisState {
   selectedKeys?: string[];
   value?: string;
   name?: string;
+  namespaceSelection?: string;
 }
 
 const initialState: RedisState = {
@@ -119,6 +120,13 @@ export const redisSlice = createSlice({
         ...state,
         keys: modifiedKeys,
       };
+    },
+    setNamespaceSelection: (state, action: PayloadAction<{ namespacePartial: string; namespace: string }>) => {
+      const newSearch = [state.namespaceSelection, action.payload.namespacePartial]
+        .filter((s) => s)
+        .join(action.payload.namespace);
+
+      return { ...state, namespaceSelection: newSearch };
     },
   },
   extraReducers: (builder) => {

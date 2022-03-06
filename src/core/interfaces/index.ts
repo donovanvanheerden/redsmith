@@ -26,6 +26,7 @@ export interface Connection {
   host: string;
   port: number;
   password: string;
+  namespace: string;
 }
 
 export interface Settings {

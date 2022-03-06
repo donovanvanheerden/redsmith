@@ -5,6 +5,8 @@ import log from 'electron-log';
 
 import electronUpdater from 'update-electron-app';
 
+console.log('redsmith version: ', app.getVersion());
+
 electronUpdater({
   updateInterval: '24 hour',
 });

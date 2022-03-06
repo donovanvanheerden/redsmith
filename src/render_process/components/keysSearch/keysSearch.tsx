@@ -6,7 +6,8 @@ import { redisActions } from '../../store/reducers/redis-slice';
 import { IconButton } from '@mui/material';
 
 import SearchIcon from '@mui/icons-material/Search';
-import TuneIcon from '@mui/icons-material/Tune';
+// import TuneIcon from '@mui/icons-material/Tune';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import { Form, SearchButton, SearchField } from './keysSearch.styles';
 import { useIpc } from '../../hooks/useFromDi';
 
@@ -17,7 +18,11 @@ import { useIpc } from '../../hooks/useFromDi';
 //   MatchingPattern = 4,
 // }
 
-const KeysSearch = (): JSX.Element => {
+interface Props {
+  onNamespaceToggle?: () => void;
+}
+
+const KeysSearch = ({ onNamespaceToggle }: Props): JSX.Element => {
   const ipc = useIpc();
   const dispatch = useAppDispatch();
 
@@ -37,16 +42,19 @@ const KeysSearch = (): JSX.Element => {
 
   return (
     <Form onSubmit={handleSearch}>
+      <IconButton onClick={onNamespaceToggle}>
+        <AccountTreeIcon />
+      </IconButton>
       <SearchField
         id="filled-search"
         name="searchKey"
         placeholder="Search"
         size="small"
-        endAdornment={
-          <IconButton>
-            <TuneIcon />
-          </IconButton>
-        }
+        // endAdornment={
+        //   <IconButton>
+        //     <TuneIcon />
+        //   </IconButton>
+        // }
       />
       {/* <FormControl> */}
       {/* <InputLabel id="filters-label">Search Filters</InputLabel> */}

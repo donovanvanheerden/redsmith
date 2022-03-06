@@ -15,17 +15,20 @@ interface Props {
 
 interface SelectorState {
   keys: string[];
-  keyCount: number;
   hasConnection: boolean;
+  namespace: string;
+  namespaceSearch: string;
 }
 
 const KeysPanel = ({ className }: Props): JSX.Element => {
-  const { keys, hasConnection } = useAppSelector<SelectorState>((state) => ({
+  const { keys, hasConnection, namespace, namespaceSearch } = useAppSelector<SelectorState>((state) => ({
     keys: state.redis.keys,
-    keyCount: state.redis.keys.length,
     hasConnection: Boolean(state.redis.name),
+    namespace: state.connection[state.redis.name]?.namespace ?? '',
+    namespaceSearch: state.redis.namespaceSelection,
   }));
 
+  const [usingNamespace, setUsingNamespace] = React.useState(false);
   const [height, setHeight] = React.useState(0);
   // const [width, setWidth] = React.useState(0);
 
@@ -50,19 +53,37 @@ const KeysPanel = ({ className }: Props): JSX.Element => {
     };
   }, []);
 
+  const handleNamespaceClick = () => {
+    setUsingNamespace((ns) => !ns);
+  };
+
   const xs = hasConnection ? 6 : 12;
+
+  let filteredKeys = keys;
+
+  if (usingNamespace && namespaceSearch.length > 0) {
+    const filtered = keys
+      .filter((key) => key.includes(namespaceSearch))
+      .map((key) => key.replace(namespaceSearch, '').split(namespace).shift());
+
+    filteredKeys = ['...', ...filtered];
+  } else {
+    filteredKeys = keys.map((key) => key.split(namespace).shift());
+  }
 
   return (
     <GridWrapper id="key-container" xs={xs} className={className} item>
       <Header title="Keys" />
-      <KeysSearch />
+      <KeysSearch onNamespaceToggle={handleNamespaceClick} />
       <span id="key-list">
         <Virtuoso
           height={height}
           style={{ padding: '0 8px' }}
-          data={keys}
-          totalCount={keys.length}
-          itemContent={(index, data) => <KeyItem key={data} data={data} index={index} />}
+          data={filteredKeys}
+          totalCount={filteredKeys.length}
+          itemContent={(index, data) => (
+            <KeyItem key={data} usingNamespace={usingNamespace} namespace={namespace} data={data} index={index} />
+          )}
         />
       </span>
     </GridWrapper>
