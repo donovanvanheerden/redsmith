@@ -8,6 +8,8 @@ import { useAppSelector } from '../../hooks';
 import { KeysSearch } from '../keysSearch';
 import { KeyItem } from '../keyItem';
 
+import { array } from '../../utils';
+
 interface Props {
   className?: string;
   children?: React.ReactNode;
@@ -25,7 +27,7 @@ const KeysPanel = ({ className }: Props): JSX.Element => {
     keys: state.redis.keys,
     hasConnection: Boolean(state.redis.name),
     namespace: state.connection[state.redis.name]?.namespace ?? '',
-    namespaceSearch: state.redis.namespaceSelection,
+    namespaceSearch: state.redis.namespaceSelection || '',
   }));
 
   const [usingNamespace, setUsingNamespace] = React.useState(false);
@@ -61,15 +63,26 @@ const KeysPanel = ({ className }: Props): JSX.Element => {
 
   let filteredKeys = keys;
 
-  if (usingNamespace && namespaceSearch.length > 0) {
-    const filtered = keys
-      .filter((key) => key.includes(namespaceSearch))
-      .map((key) => key.replace(namespaceSearch, '').split(namespace).shift());
+  console.log('using namespace: ', usingNamespace);
+  console.log('using namespace search: ', namespaceSearch);
 
-    filteredKeys = ['...', ...filtered];
-  } else {
-    filteredKeys = keys.map((key) => key.split(namespace).shift());
+  if (namespace && usingNamespace) {
+    if (namespaceSearch.length > 0) {
+      const filtered = keys.filter((key) => key.includes(namespaceSearch));
+
+      console.log('filtered using namespace search: ', filtered);
+
+      const afiltered = filtered.map((key) => key.replace(`${namespaceSearch}:`, '').split(namespace).shift());
+
+      console.log('remapping of keys', afiltered);
+
+      filteredKeys = ['...', ...afiltered];
+    } else {
+      filteredKeys = keys.map((key) => key.split(namespace).shift()).filter(array.distinct);
+    }
   }
+
+  console.log('filtered: ', filteredKeys);
 
   return (
     <GridWrapper id="key-container" xs={xs} className={className} item>
